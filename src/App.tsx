@@ -756,11 +756,11 @@ function App() {
           aiPatches: prev.aiPatches.map((p: AiPatch) =>
             p.id === patchId
               ? {
-                  ...p,
-                  patchData: newPatchData,
-                  isLoading: false,
-                  name: useFastInpaint ? 'Inpaint' : prompt && prompt.trim() ? prompt.trim() : p.name,
-                }
+                ...p,
+                patchData: newPatchData,
+                isLoading: false,
+                name: useFastInpaint ? 'Inpaint' : prompt && prompt.trim() ? prompt.trim() : p.name,
+              }
               : p,
           ),
         }));
@@ -848,11 +848,11 @@ function App() {
           aiPatches: adjustments.aiPatches.map((p: AiPatch) =>
             p.id === patchId
               ? {
-                  ...p,
-                  subMasks: p.subMasks.map((sm: SubMask) =>
-                    sm.id === subMaskId ? { ...sm, parameters: finalSubMaskParams } : sm,
-                  ),
-                }
+                ...p,
+                subMasks: p.subMasks.map((sm: SubMask) =>
+                  sm.id === subMaskId ? { ...sm, parameters: finalSubMaskParams } : sm,
+                ),
+              }
               : p,
           ),
         };
@@ -876,13 +876,13 @@ function App() {
           aiPatches: prev.aiPatches?.map((p: AiPatch) =>
             p.id === patchId
               ? {
-                  ...p,
-                  patchData: newPatchData,
-                  isLoading: false,
-                  subMasks: p.subMasks.map((sm: SubMask) =>
-                    sm.id === subMaskId ? { ...sm, parameters: finalSubMaskParams } : sm,
-                  ),
-                }
+                ...p,
+                patchData: newPatchData,
+                isLoading: false,
+                subMasks: p.subMasks.map((sm: SubMask) =>
+                  sm.id === subMaskId ? { ...sm, parameters: finalSubMaskParams } : sm,
+                ),
+              }
               : p,
           ),
         }));
@@ -1244,32 +1244,32 @@ function App() {
       searchTags.length === 0 && lowerCaseSearchText === ''
         ? filteredList
         : filteredList.filter((image: ImageFile) => {
-            const lowerCaseImageTags = (image.tags || []).map((t) => t.toLowerCase().replace('user:', ''));
-            const filename = image?.path?.split(/[\\/]/)?.pop()?.toLowerCase() || '';
+          const lowerCaseImageTags = (image.tags || []).map((t) => t.toLowerCase().replace('user:', ''));
+          const filename = image?.path?.split(/[\\/]/)?.pop()?.toLowerCase() || '';
 
-            let tagsMatch = true;
-            if (searchTags.length > 0) {
-              const lowerCaseSearchTags = searchTags.map((t) => t.toLowerCase());
-              if (searchMode === 'OR') {
-                tagsMatch = lowerCaseSearchTags.some((searchTag) =>
-                  lowerCaseImageTags.some((imgTag) => imgTag.includes(searchTag)),
-                );
-              } else {
-                tagsMatch = lowerCaseSearchTags.every((searchTag) =>
-                  lowerCaseImageTags.some((imgTag) => imgTag.includes(searchTag)),
-                );
-              }
+          let tagsMatch = true;
+          if (searchTags.length > 0) {
+            const lowerCaseSearchTags = searchTags.map((t) => t.toLowerCase());
+            if (searchMode === 'OR') {
+              tagsMatch = lowerCaseSearchTags.some((searchTag) =>
+                lowerCaseImageTags.some((imgTag) => imgTag.includes(searchTag)),
+              );
+            } else {
+              tagsMatch = lowerCaseSearchTags.every((searchTag) =>
+                lowerCaseImageTags.some((imgTag) => imgTag.includes(searchTag)),
+              );
             }
+          }
 
-            let textMatch = true;
-            if (lowerCaseSearchText !== '') {
-              textMatch =
-                filename.includes(lowerCaseSearchText) ||
-                lowerCaseImageTags.some((t) => t.includes(lowerCaseSearchText));
-            }
+          let textMatch = true;
+          if (lowerCaseSearchText !== '') {
+            textMatch =
+              filename.includes(lowerCaseSearchText) ||
+              lowerCaseImageTags.some((t) => t.includes(lowerCaseSearchText));
+          }
 
-            return tagsMatch && textMatch;
-          });
+          return tagsMatch && textMatch;
+        });
 
     const list = [...filteredBySearch];
 
@@ -1791,7 +1791,7 @@ function App() {
       const { searchCriteria: _searchCriteria, ...settingsToSave } = newSettings as any;
       setAppSettings(newSettings);
       return invoke(Invokes.SaveSettings, { settings: settingsToSave })
-        .then(() => {})
+        .then(() => { })
         .catch((err) => {
           console.error('Failed to save settings:', err);
         });
@@ -4479,7 +4479,7 @@ function App() {
     let deleteSubmenu;
     if (selectionHasVirtualCopies) {
       deleteSubmenu = [
-        { label: 'Cancel', icon: X, onClick: () => {} },
+        { label: 'Cancel', icon: X, onClick: () => { } },
         {
           label: 'Confirm Delete + Virtual Copies',
           icon: Check,
@@ -4489,7 +4489,7 @@ function App() {
       ];
     } else if (hasAssociatedFiles) {
       deleteSubmenu = [
-        { label: 'Cancel', icon: X, onClick: () => {} },
+        { label: 'Cancel', icon: X, onClick: () => { } },
         {
           label: 'Delete Selected Only',
           icon: Check,
@@ -4505,7 +4505,7 @@ function App() {
       ];
     } else {
       deleteSubmenu = [
-        { label: 'Cancel', icon: X, onClick: () => {} },
+        { label: 'Cancel', icon: X, onClick: () => { } },
         {
           label: 'Confirm',
           icon: Check,
@@ -4593,27 +4593,27 @@ function App() {
     const options = [
       ...(!isEditingThisImage
         ? [
-            {
-              disabled: !isSingleSelection,
-              icon: Edit,
-              label: 'Edit Image',
-              onClick: () => handleImageSelect(finalSelection[0]),
-            },
-            {
-              icon: Save,
-              label: exportLabel,
-              onClick: onExportClick,
-            },
-            { type: OPTION_SEPARATOR },
-          ]
+          {
+            disabled: !isSingleSelection,
+            icon: Edit,
+            label: 'Edit Image',
+            onClick: () => handleImageSelect(finalSelection[0]),
+          },
+          {
+            icon: Save,
+            label: exportLabel,
+            onClick: onExportClick,
+          },
+          { type: OPTION_SEPARATOR },
+        ]
         : [
-            {
-              icon: Save,
-              label: exportLabel,
-              onClick: onExportClick,
-            },
-            { type: OPTION_SEPARATOR },
-          ]),
+          {
+            icon: Save,
+            label: exportLabel,
+            onClick: onExportClick,
+          },
+          { type: OPTION_SEPARATOR },
+        ]),
       {
         disabled: !isSingleSelection,
         icon: Copy,
@@ -4894,15 +4894,15 @@ function App() {
 
     const pinOption = isCurrentlyPinned
       ? {
-          icon: PinOff,
-          label: 'Unpin Folder',
-          onClick: () => handleTogglePinFolder(targetPath),
-        }
+        icon: PinOff,
+        label: 'Unpin Folder',
+        onClick: () => handleTogglePinFolder(targetPath),
+      }
       : {
-          icon: Pin,
-          label: 'Pin Folder',
-          onClick: () => handleTogglePinFolder(targetPath),
-        };
+        icon: Pin,
+        label: 'Pin Folder',
+        onClick: () => handleTogglePinFolder(targetPath),
+      };
 
     const options = [
       pinOption,
@@ -4967,30 +4967,30 @@ function App() {
       },
       ...(path
         ? [
-            {
-              disabled: isRoot,
-              icon: Trash2,
-              isDestructive: true,
-              label: 'Delete Folder',
-              submenu: [
-                { label: 'Cancel', icon: X, onClick: () => {} },
-                {
-                  label: 'Confirm',
-                  icon: Check,
-                  isDestructive: true,
-                  onClick: async () => {
-                    try {
-                      await invoke(Invokes.DeleteFolder, { path: targetPath });
-                      if (currentFolderPath?.startsWith(targetPath)) await handleSelectSubfolder(rootPath);
-                      refreshAllFolderTrees();
-                    } catch (err) {
-                      setError(`Failed to delete folder: ${err}`);
-                    }
-                  },
+          {
+            disabled: isRoot,
+            icon: Trash2,
+            isDestructive: true,
+            label: 'Delete Folder',
+            submenu: [
+              { label: 'Cancel', icon: X, onClick: () => { } },
+              {
+                label: 'Confirm',
+                icon: Check,
+                isDestructive: true,
+                onClick: async () => {
+                  try {
+                    await invoke(Invokes.DeleteFolder, { path: targetPath });
+                    if (currentFolderPath?.startsWith(targetPath)) await handleSelectSubfolder(rootPath);
+                    refreshAllFolderTrees();
+                  } catch (err) {
+                    setError(`Failed to delete folder: ${err}`);
+                  }
                 },
-              ],
-            },
-          ]
+              },
+            ],
+          },
+        ]
         : []),
     ];
     showContextMenu(event.clientX, event.clientY, options);
@@ -5577,8 +5577,8 @@ function App() {
         loadingImageUrl={
           panoramaModalState.stitchingSourcePaths.length > 0
             ? thumbnails[
-                panoramaModalState.stitchingSourcePaths[Math.floor(panoramaModalState.stitchingSourcePaths.length / 2)]
-              ] || null
+            panoramaModalState.stitchingSourcePaths[Math.floor(panoramaModalState.stitchingSourcePaths.length / 2)]
+            ] || null
             : null
         }
         onClose={() =>
@@ -5605,8 +5605,8 @@ function App() {
         loadingImageUrl={
           hdrModalState.stitchingSourcePaths.length > 0
             ? thumbnails[
-                hdrModalState.stitchingSourcePaths[Math.floor(hdrModalState.stitchingSourcePaths.length / 2)]
-              ] || null
+            hdrModalState.stitchingSourcePaths[Math.floor(hdrModalState.stitchingSourcePaths.length / 2)]
+            ] || null
             : null
         }
         onClose={() =>
@@ -5656,7 +5656,7 @@ function App() {
         loadingImageUrl={
           denoiseModalState.targetPaths.length > 0
             ? thumbnails[denoiseModalState.targetPaths[0]] ||
-              (selectedImage?.path === denoiseModalState.targetPaths[0] ? finalPreviewUrl : null)
+            (selectedImage?.path === denoiseModalState.targetPaths[0] ? finalPreviewUrl : null)
             : null
         }
       />
@@ -5723,7 +5723,7 @@ function App() {
           aria-label="Settings"
         >
           <div className="flex flex-1 min-h-0 flex-col px-4 py-6 sm:px-6 sm:py-8 md:py-10 lg:px-8">
-            <div className="mx-auto flex h-full min-h-0 w-full max-w-7xl flex-1 flex-col overflow-hidden">
+            <div className="mx-auto flex h-full min-h-0 w-full max-w-4xl flex-1 flex-col overflow-hidden">
               <SettingsPanel
                 appSettings={appSettings}
                 onBack={() => setIsSettingsOpen(false)}
