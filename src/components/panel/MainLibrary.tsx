@@ -24,7 +24,6 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { List, useListCallbackRef } from 'react-window';
 import Button from '../ui/Button';
-import SettingsPanel from './SettingsPanel';
 import { ThemeProps, THEMES, DEFAULT_THEME_ID } from '../../utils/themes';
 import {
   AppSettings,
@@ -103,6 +102,7 @@ interface MainLibraryProps {
   onImageDoubleClick(path: string): void;
   onLibraryRefresh(): void;
   onOpenFolder(): void;
+  onOpenSettings(): void;
   onSettingsChange(settings: AppSettings): Promise<void>;
   onThumbnailAspectRatioChange(aspectRatio: ThumbnailAspectRatio): void;
   onThumbnailSizeChange(size: ThumbnailSize): void;
@@ -1518,6 +1518,7 @@ export default function MainLibrary({
   onImageDoubleClick,
   onLibraryRefresh,
   onOpenFolder,
+  onOpenSettings,
   onSettingsChange,
   onThumbnailAspectRatioChange,
   onThumbnailSizeChange,
@@ -1539,7 +1540,6 @@ export default function MainLibrary({
   listColumnWidths,
   setListColumnWidths,
 }: MainLibraryProps) {
-  const [showSettings, setShowSettings] = useState(false);
   const [appVersion, setAppVersion] = useState('');
   const [, setSupportedTypes] = useState<SupportedTypes | null>(null);
   const libraryContainerRef = useRef<HTMLDivElement>(null);
@@ -1915,16 +1915,6 @@ export default function MainLibrary({
           </AnimatePresence>
         </div>
         <div className="w-full md:w-1/2 flex flex-col p-8 lg:p-16 relative">
-          {showSettings ? (
-            <SettingsPanel
-              appSettings={appSettings}
-              onBack={() => setShowSettings(false)}
-              onLibraryRefresh={onLibraryRefresh}
-              onSettingsChange={onSettingsChange}
-              rootPath={rootPath}
-            />
-          ) : (
-            <>
               <div className="my-auto text-left">
                 <Text variant={TextVariants.displayLarge}>RapidRAW</Text>
                 <Text
@@ -1968,7 +1958,7 @@ export default function MainLibrary({
                     </Button>
                     <Button
                       className="px-3 bg-surface text-text-primary shadow-none h-11"
-                      onClick={() => setShowSettings(true)}
+                      onClick={onOpenSettings}
                       size="lg"
                       data-tooltip="Go to Settings"
                       variant="ghost"
@@ -2037,8 +2027,6 @@ export default function MainLibrary({
                   </div>
                 )}
               </Text>
-            </>
-          )}
         </div>
       </div>
     );

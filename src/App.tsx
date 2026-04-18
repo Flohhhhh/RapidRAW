@@ -45,6 +45,7 @@ import {
 import TitleBar from './window/TitleBar';
 import CommunityPage from './components/panel/CommunityPage';
 import MainLibrary, { ColumnWidths } from './components/panel/MainLibrary';
+import SettingsPanel from './components/panel/SettingsPanel';
 import FolderTree from './components/panel/FolderTree';
 import Editor from './components/panel/Editor';
 import Controls from './components/panel/right/ControlsPanel';
@@ -409,6 +410,7 @@ function App() {
   const [renameTargetPaths, setRenameTargetPaths] = useState<Array<string>>([]);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isCopyPasteSettingsModalOpen, setIsCopyPasteSettingsModalOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [importTargetFolder, setImportTargetFolder] = useState<string | null>(null);
   const [importSourcePaths, setImportSourcePaths] = useState<Array<string>>([]);
   const [folderActionTarget, setFolderActionTarget] = useState<string | null>(null);
@@ -2403,6 +2405,7 @@ function App() {
   }, []);
 
   const handleBackToLibrary = useCallback(() => {
+    setIsSettingsOpen(false);
     if (selectedImage?.path && cachedEditStateRef.current) {
       imageCacheRef.current.set(selectedImage.path, cachedEditStateRef.current);
     }
@@ -3927,6 +3930,7 @@ function App() {
   ]);
 
   const handleGoHome = () => {
+    setIsSettingsOpen(false);
     setRootPath(null);
     setCurrentFolderPath(null);
     setImageList([]);
@@ -5126,6 +5130,7 @@ function App() {
             onImageDoubleClick={handleImageSelect}
             onLibraryRefresh={handleLibraryRefresh}
             onOpenFolder={handleOpenFolder}
+            onOpenSettings={() => setIsSettingsOpen(true)}
             onSettingsChange={handleSettingsChange}
             onThumbnailAspectRatioChange={setThumbnailAspectRatio}
             onThumbnailSizeChange={setThumbnailSize}
@@ -5480,6 +5485,7 @@ function App() {
                 <RightPanelSwitcher
                   activePanel={activeRightPanel}
                   onPanelSelect={handleRightPanelSelect}
+                  onOpenAppSettings={() => setIsSettingsOpen(true)}
                   isInstantTransition={isInstantTransition}
                 />
               </div>
@@ -5709,6 +5715,26 @@ function App() {
         sourceImages={collageModalState.sourceImages}
         thumbnails={thumbnails}
       />
+      {isSettingsOpen && appSettings && (
+        <div
+          className="fixed inset-0 z-60 flex flex-col bg-bg-primary overflow-hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Settings"
+        >
+          <div className="flex flex-1 min-h-0 flex-col px-4 py-6 sm:px-6 sm:py-8 md:py-10 lg:px-8">
+            <div className="mx-auto flex h-full min-h-0 w-full max-w-7xl flex-1 flex-col overflow-hidden">
+              <SettingsPanel
+                appSettings={appSettings}
+                onBack={() => setIsSettingsOpen(false)}
+                onLibraryRefresh={handleLibraryRefresh}
+                onSettingsChange={handleSettingsChange}
+                rootPath={rootPath}
+              />
+            </div>
+          </div>
+        </div>
+      )}
       <ToastContainer
         position="bottom-right"
         autoClose={5000}
