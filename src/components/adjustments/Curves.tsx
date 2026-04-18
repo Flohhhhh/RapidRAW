@@ -97,9 +97,8 @@ function getCurvePath(points: Array<Coord>) {
     const cp2x = p1.x - dx / 3.0;
     const cp2y = p1.y - (m1 * dx) / 3.0;
 
-    path += ` C ${cp1x.toFixed(2)} ${255 - Number(cp1y.toFixed(2))}, ${cp2x.toFixed(2)} ${
-      255 - Number(cp2y.toFixed(2))
-    }, ${p1.x} ${255 - p1.y}`;
+    path += ` C ${cp1x.toFixed(2)} ${255 - Number(cp1y.toFixed(2))}, ${cp2x.toFixed(2)} ${255 - Number(cp2y.toFixed(2))
+      }, ${p1.x} ${255 - p1.y}`;
   }
 
   if (points[n - 1].x < 255) {
@@ -326,7 +325,7 @@ export default function CurveGraph({
 
   const handlePointStart = (e: any, index: number) => {
     if (e.button === 2) return;
-    
+
     if (!e.touches) e.preventDefault();
     e.stopPropagation();
 
@@ -485,17 +484,16 @@ export default function CurveGraph({
   };
 
   return (
-    <div className="select-none touch-none" ref={containerRef}>
-      <div className="flex items-center justify-between gap-1 mb-2 mt-2">
+    <div className="select-none touch-none px-1" ref={containerRef}>
+      <div className="flex items-center justify-between gap-1 mb-6 mt-2">
         <div className="flex items-center gap-1">
           {Object.keys(channelConfig).map((channel: any) => (
             <button
               className={`w-7 h-7 rounded-full flex items-center justify-center transition-all
-              ${
-                activeChannel === channel
+              ${activeChannel === channel
                   ? 'ring-2 ring-offset-2 ring-offset-surface ring-accent'
                   : 'bg-surface-secondary'
-              }
+                }
               ${channel === ActiveChannel.Luma ? 'text-text-primary' : ''}`}
               key={channel}
               onClick={() => setActiveChannel(channel as ActiveChannel)}
@@ -515,7 +513,7 @@ export default function CurveGraph({
       </div>
 
       <div
-        className="w-full aspect-square bg-surface-secondary p-1 rounded-md relative touch-none"
+        className="w-full aspect-square bg-bg-primary relative touch-none"
         onMouseDown={handleContainerStart}
         onTouchStart={handleContainerStart}
         onDoubleClick={handleDoubleClick}

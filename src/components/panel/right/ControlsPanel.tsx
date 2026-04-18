@@ -178,9 +178,8 @@ export default function Controls({
 
     const isPasteAllowed = copiedSectionAdjustments && copiedSectionAdjustments.section === sectionName;
     const pasteLabel = copiedSectionAdjustments
-      ? `Paste ${
-          copiedSectionAdjustments.section.charAt(0).toUpperCase() + copiedSectionAdjustments.section.slice(1)
-        } Settings`
+      ? `Paste ${copiedSectionAdjustments.section.charAt(0).toUpperCase() + copiedSectionAdjustments.section.slice(1)
+      } Settings`
       : 'Paste Settings';
 
     const options: Array<ControlsPanelOption> = [
@@ -249,7 +248,7 @@ export default function Controls({
                 waveformData={waveform || null}
                 histogram={histogram}
                 displayMode={activeWaveformChannel || 'luma'}
-                setDisplayMode={setActiveWaveformChannel || (() => {})}
+                setDisplayMode={setActiveWaveformChannel || (() => { })}
                 showClipping={adjustments.showClipping || false}
                 onToggleClipping={() => {
                   setAdjustments((prev: Adjustments) => ({
@@ -265,7 +264,7 @@ export default function Controls({
         )}
       </AnimatePresence>
 
-      <div className="grow overflow-y-auto p-4 flex flex-col gap-2">
+      <div className="grow overflow-y-auto flex flex-col">
         {Object.keys(ADJUSTMENT_SECTIONS).map((sectionName: string) => {
           const SectionComponent: any = {
             basic: BasicAdjustments,

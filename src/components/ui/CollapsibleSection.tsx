@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 import { ChevronDown, Eye, EyeOff } from 'lucide-react';
 import clsx from 'clsx';
 import Text from './Text';
@@ -22,37 +22,11 @@ export default function CollapsibleSection({
   isOpen,
   onContextMenu,
   onToggle,
-  onToggleVisibility = () => {},
+  onToggleVisibility = () => { },
   title,
 }: CollapsibleSectionProps) {
-  const contentRef = useRef<HTMLDivElement | null>(null);
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
   const [isHovering, setIsHovering] = useState(false);
   const hoverTimeoutRef = useRef<any>(null);
-
-  useEffect(() => {
-    const wrapper = wrapperRef.current;
-    const content = contentRef.current;
-    if (!wrapper || !content) {
-      return;
-    }
-
-    const updateMaxHeight = () => {
-      if (isOpen) {
-        const contentHeight = content.scrollHeight;
-        wrapper.style.maxHeight = `${contentHeight}px`;
-      } else {
-        wrapper.style.maxHeight = '0px';
-      }
-    };
-
-    updateMaxHeight();
-
-    const resizeObserver = new ResizeObserver(updateMaxHeight);
-    resizeObserver.observe(content);
-
-    return () => resizeObserver.disconnect();
-  }, [isOpen]);
 
   const handleMouseEnter = () => {
     if (!canToggleVisibility) {
@@ -77,9 +51,9 @@ export default function CollapsibleSection({
   };
 
   return (
-    <div className="bg-surface rounded-lg overflow-hidden shrink-0" onContextMenu={onContextMenu}>
+    <div className="bg-surface overflow-hidden shrink-0" onContextMenu={onContextMenu}>
       <div
-        className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-card-active transition-colors duration-200"
+        className="bg-bg-secondary border-b-2 border-surface w-full pl-4 pr-3 py-2 flex items-center justify-between text-left hover:bg-card-active transition-colors duration-200"
         onClick={onToggle}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -108,15 +82,21 @@ export default function CollapsibleSection({
           size={20}
         />
       </div>
-      <div ref={wrapperRef} className="overflow-hidden transition-all duration-300 ease-in-out">
-        <div
-          className={clsx(
-            'px-4 pb-4 transition-opacity duration-300',
-            !isContentVisible && 'opacity-30 pointer-events-none',
-          )}
-          ref={contentRef}
-        >
-          {children}
+      <div
+        className={clsx(
+          'grid transition-[grid-template-rows] duration-300 ease-in-out',
+          isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]',
+        )}
+      >
+        <div className="min-h-0 overflow-hidden">
+          <div
+            className={clsx(
+              'px-4 pt-4 pb-8 transition-opacity duration-300',
+              !isContentVisible && 'opacity-30 pointer-events-none',
+            )}
+          >
+            {children}
+          </div>
         </div>
       </div>
     </div>

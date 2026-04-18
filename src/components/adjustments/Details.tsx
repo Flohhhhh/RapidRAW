@@ -27,9 +27,9 @@ export default function DetailsPanel({
   const adjustmentVisibility = appSettings?.adjustmentVisibility || {};
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-8">
       {adjustmentVisibility.sharpening !== false && (
-        <div className="p-2 bg-bg-tertiary rounded-md">
+        <div className="bg-bg-tertiary rounded-md">
           <Text variant={TextVariants.heading} className="mb-2">
             Sharpening
           </Text>
@@ -46,7 +46,7 @@ export default function DetailsPanel({
       )}
 
       {adjustmentVisibility.presence !== false && (
-        <div className="p-2 bg-bg-tertiary rounded-md">
+        <div className="bg-bg-tertiary rounded-md">
           <Text variant={TextVariants.heading} className="mb-2">
             Presence
           </Text>

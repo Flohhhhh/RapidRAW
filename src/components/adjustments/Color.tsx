@@ -87,9 +87,8 @@ const ColorSwatch = ({ color, name, isActive, onClick }: ColorSwatchProps) => {
       onTouchEnd={handleMouseUp}
     >
       <div
-        className={`absolute inset-0 rounded-full border-2 transition-all duration-200 ease-out ${
-          isActive ? 'border-white opacity-100' : 'scale-100 border-transparent opacity-0'
-        }`}
+        className={`absolute inset-0 rounded-full border-2 transition-all duration-200 ease-out ${isActive ? 'border-white opacity-100' : 'scale-100 border-transparent opacity-0'
+          }`}
         style={{
           transform: isActive ? (isPressed ? 'scale(1.1)' : 'scale(1.25)') : undefined,
           transition: isPressed
@@ -99,9 +98,8 @@ const ColorSwatch = ({ color, name, isActive, onClick }: ColorSwatchProps) => {
       />
 
       <div
-        className={`absolute inset-0 rounded-full transition-all duration-150 ease-out ${
-          isActive ? 'shadow-lg' : 'shadow-md'
-        }`}
+        className={`absolute inset-0 rounded-full transition-all duration-150 ease-out ${isActive ? 'shadow-lg' : 'shadow-md'
+          }`}
         style={{
           backgroundColor: color,
           transform: getTransform(),
@@ -158,7 +156,7 @@ const ColorGradingPanel = ({ adjustments, setAdjustments, onDragStateChange }: C
 
   return (
     <div>
-      <div className="flex items-center justify-start gap-2 mb-4 mt-2">
+      <div className="px-1 flex items-center justify-start gap-2 mb-4 mt-2">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
           return (
@@ -166,10 +164,9 @@ const ColorGradingPanel = ({ adjustments, setAdjustments, onDragStateChange }: C
               key={tab.id}
               onClick={() => setActiveTab(tab.id as '3way' | 'global')}
               className={`w-7 h-7 rounded-full flex items-center justify-center transition-all focus:outline-none
-                ${
-                  isActive
-                    ? 'ring-2 ring-offset-2 ring-offset-surface ring-accent text-text-primary'
-                    : 'bg-bg-secondary text-text-secondary hover:text-text-primary hover:bg-bg-secondary/80'
+                ${isActive
+                  ? 'ring-2 ring-offset-2 ring-offset-surface ring-accent text-text-primary'
+                  : 'bg-bg-secondary text-text-secondary hover:text-text-primary hover:bg-bg-secondary/80'
                 }`}
             >
               {tab.icon}
@@ -182,10 +179,9 @@ const ColorGradingPanel = ({ adjustments, setAdjustments, onDragStateChange }: C
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           className={`w-7 h-7 rounded-full flex items-center justify-center transition-all focus:outline-none
-            ${
-              isExpanded
-                ? 'bg-accent text-button-text'
-                : 'bg-bg-secondary text-text-secondary hover:text-text-primary hover:bg-bg-secondary/80'
+            ${isExpanded
+              ? 'bg-accent text-button-text'
+              : 'bg-bg-secondary text-text-secondary hover:text-text-primary hover:bg-bg-secondary/80'
             }`}
           data-tooltip="Toggle Sliders"
         >
@@ -193,7 +189,7 @@ const ColorGradingPanel = ({ adjustments, setAdjustments, onDragStateChange }: C
         </button>
       </div>
 
-      <div className="relative w-full mb-4">
+      <div className="relative w-full mb-4 px-1">
         <AnimatePresence mode="wait">
           {activeTab === '3way' ? (
             <motion.div
@@ -422,15 +418,14 @@ export default function ColorPanel({
 
   return (
     <div className="space-y-4">
-      <div className="p-2 bg-bg-tertiary rounded-md">
+      <div className="bg-bg-tertiary rounded-md">
         <div className="flex justify-between items-center mb-2">
           <Text variant={TextVariants.heading}>White Balance</Text>
           {!isForMask && toggleWbPicker && (
             <button
               onClick={toggleWbPicker}
-              className={`p-1.5 rounded-md transition-colors ${
-                isWbPickerActive ? 'bg-accent text-button-text' : 'hover:bg-bg-secondary text-text-secondary'
-              }`}
+              className={`p-1.5 rounded-md transition-colors ${isWbPickerActive ? 'bg-accent text-button-text' : 'hover:bg-bg-secondary text-text-secondary'
+                }`}
               data-tooltip="White Balance Picker"
             >
               <Pipette size={16} />
@@ -459,7 +454,7 @@ export default function ColorPanel({
         />
       </div>
 
-      <div className="p-2 bg-bg-tertiary rounded-md">
+      <div className="bg-bg-tertiary rounded-md">
         <Text variant={TextVariants.heading} className="mb-2">
           Presence
         </Text>
@@ -483,7 +478,7 @@ export default function ColorPanel({
         />
       </div>
 
-      <div className="p-2 bg-bg-tertiary rounded-md">
+      <div className="bg-bg-tertiary rounded-md">
         <Text variant={TextVariants.heading} className="mb-3">
           Color Grading
         </Text>
@@ -495,7 +490,7 @@ export default function ColorPanel({
         />
       </div>
 
-      <div className="p-2 bg-bg-tertiary rounded-md">
+      <div className="bg-bg-tertiary rounded-md">
         <Text variant={TextVariants.heading} className="mb-3">
           Color Mixer
         </Text>
