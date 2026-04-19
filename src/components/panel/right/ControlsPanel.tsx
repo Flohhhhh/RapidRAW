@@ -309,7 +309,7 @@ export default function Controls({
       <ConfirmModal
         confirmText="Reset"
         isOpen={isResetAdjustmentsConfirmOpen}
-        message="This resets tone, color, curves, details, and effects to defaults. Masks, crop, and rating are kept."
+        message="This will remove all edits from this image and reset the image to its original state and cannot be undone."
         onClose={() => setIsResetAdjustmentsConfirmOpen(false)}
         onConfirm={handleResetAdjustments}
         title="Reset adjustments?"
