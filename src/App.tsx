@@ -4238,8 +4238,8 @@ function App() {
         confirmText: 'Reset',
         isOpen: true,
         message: isSingle
-          ? 'This removes all edits for this image and restores defaults. Rating is kept.'
-          : `This removes all edits for ${count} images and restores defaults. Ratings are kept.`,
+          ? 'This will remove all edits from this image and reset the image to its original state and cannot be undone.'
+          : `This will remove all edits from ${count} images and reset the images to their original states and cannot be undone.`,
         onConfirm: () => handleResetAdjustments(pathsToReset),
         title: isSingle ? 'Reset adjustments?' : `Reset adjustments on ${count} images?`,
       });
