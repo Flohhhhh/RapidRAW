@@ -4226,6 +4226,27 @@ function App() {
     ],
   );
 
+  const promptResetAdjustments = useCallback(
+    (explicitPaths?: Array<string>) => {
+      const pathsToReset = explicitPaths ?? multiSelectedPaths;
+      if (pathsToReset.length === 0) {
+        return;
+      }
+      const count = pathsToReset.length;
+      const isSingle = count === 1;
+      setConfirmModalState({
+        confirmText: 'Reset',
+        isOpen: true,
+        message: isSingle
+          ? 'This removes all edits for this image and restores defaults. Rating is kept.'
+          : `This removes all edits for ${count} images and restores defaults. Ratings are kept.`,
+        onConfirm: () => handleResetAdjustments(pathsToReset),
+        title: isSingle ? 'Reset adjustments?' : `Reset adjustments on ${count} images?`,
+      });
+    },
+    [multiSelectedPaths, handleResetAdjustments],
+  );
+
   const handleImportClick = useCallback(
     async (targetPath: string) => {
       try {
@@ -4416,20 +4437,7 @@ function App() {
       {
         label: 'Reset Adjustments',
         icon: RotateCcw,
-        onClick: () => {
-          debouncedSetHistory.cancel();
-          const currentRating = adjustments.rating;
-
-          const originalAspectRatio =
-            selectedImage.width && selectedImage.height ? selectedImage.width / selectedImage.height : null;
-
-          resetAdjustmentsHistory({
-            ...INITIAL_ADJUSTMENTS,
-            aspectRatio: originalAspectRatio,
-            rating: currentRating,
-            aiPatches: [],
-          });
-        },
+        onClick: () => promptResetAdjustments([selectedImage.path]),
       },
     ];
     showContextMenu(event.clientX, event.clientY, options);
@@ -4816,7 +4824,7 @@ function App() {
           );
         },
       },
-      { label: resetLabel, icon: RotateCcw, onClick: () => handleResetAdjustments(finalSelection) },
+      { label: resetLabel, icon: RotateCcw, onClick: () => promptResetAdjustments(finalSelection) },
       deleteOption,
     ];
     showContextMenu(event.clientX, event.clientY, options);
@@ -5164,7 +5172,7 @@ function App() {
             onOpenCopyPasteSettings={() => setIsCopyPasteSettingsModalOpen(true)}
             onPaste={() => handlePasteAdjustments()}
             onRate={handleRate}
-            onReset={() => handleResetAdjustments()}
+            onReset={() => promptResetAdjustments()}
             rating={libraryActiveAdjustments.rating || 0}
             thumbnailAspectRatio={thumbnailAspectRatio}
             totalImages={imageList.length}

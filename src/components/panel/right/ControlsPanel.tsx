@@ -16,6 +16,7 @@ import { OPTION_SEPARATOR, SelectedImage, AppSettings, WaveformData, Orientation
 import { ChannelConfig } from '../../adjustments/Curves';
 import Text from '../../ui/Text';
 import { TextVariants } from '../../../types/typography';
+import ConfirmModal from '../../modals/ConfirmModal';
 
 interface ControlsPanelOption {
   disabled?: boolean;
@@ -76,6 +77,7 @@ export default function Controls({
 }: ControlsProps) {
   const { showContextMenu } = useContextMenu();
   const [isResizingWaveform, setIsResizingWaveform] = useState<boolean>(false);
+  const [isResetAdjustmentsConfirmOpen, setIsResetAdjustmentsConfirmOpen] = useState(false);
 
   const handleWaveformResize = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -227,7 +229,7 @@ export default function Controls({
           <button
             className="p-2 rounded-full hover:bg-surface disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             disabled={!selectedImage}
-            onClick={handleResetAdjustments}
+            onClick={() => setIsResetAdjustmentsConfirmOpen(true)}
             data-tooltip="Reset Adjustments"
           >
             <RotateCcw size={18} />
@@ -304,6 +306,14 @@ export default function Controls({
           );
         })}
       </div>
+      <ConfirmModal
+        confirmText="Reset"
+        isOpen={isResetAdjustmentsConfirmOpen}
+        message="This resets tone, color, curves, details, and effects to defaults. Masks, crop, and rating are kept."
+        onClose={() => setIsResetAdjustmentsConfirmOpen(false)}
+        onConfirm={handleResetAdjustments}
+        title="Reset adjustments?"
+      />
     </div>
   );
 }
