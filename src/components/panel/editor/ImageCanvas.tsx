@@ -2146,6 +2146,8 @@ const ImageCanvas = memo(
               <ReactCrop
                 aspect={adjustments.aspectRatio}
                 crop={crop}
+                // Patched library: show N/E/S/W handles when aspect is locked and use centered-edge resize (see patches/README.md).
+                hideEdgeHandlesWhenAspectLocked={false}
                 onChange={setCrop}
                 onComplete={handleCropComplete}
                 ruleOfThirds={false}

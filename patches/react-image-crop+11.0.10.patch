@@ -1,0 +1,1901 @@
+diff --git a/node_modules/react-image-crop/dist/ReactCrop.css b/node_modules/react-image-crop/dist/ReactCrop.css
+index 67f2e5d..5d5c06c 100644
+--- a/node_modules/react-image-crop/dist/ReactCrop.css
++++ b/node_modules/react-image-crop/dist/ReactCrop.css
+@@ -1 +1,242 @@
+-@keyframes marching-ants{0%{background-position:0 0,0 100%,0 0,100% 0}to{background-position:20px 0,-20px 100%,0 -20px,100% 20px}}:root{--rc-drag-handle-size: 12px;--rc-drag-handle-mobile-size: 24px;--rc-drag-handle-bg-colour: rgba(0, 0, 0, .2);--rc-drag-bar-size: 6px;--rc-border-color: rgba(255, 255, 255, .7);--rc-focus-color: #0088ff}.ReactCrop{position:relative;display:inline-block;cursor:crosshair;max-width:100%}.ReactCrop *,.ReactCrop *:before,.ReactCrop *:after{box-sizing:border-box}.ReactCrop--disabled,.ReactCrop--locked{cursor:inherit}.ReactCrop__child-wrapper{overflow:hidden;max-height:inherit}.ReactCrop__child-wrapper>img,.ReactCrop__child-wrapper>video{display:block;max-width:100%;max-height:inherit}.ReactCrop:not(.ReactCrop--disabled) .ReactCrop__child-wrapper>img,.ReactCrop:not(.ReactCrop--disabled) .ReactCrop__child-wrapper>video{touch-action:none}.ReactCrop:not(.ReactCrop--disabled) .ReactCrop__crop-selection{touch-action:none}.ReactCrop__crop-mask{position:absolute;top:0;right:0;bottom:0;left:0;pointer-events:none;width:calc(100% + .5px);height:calc(100% + .5px)}.ReactCrop__crop-selection{position:absolute;top:0;left:0;transform:translateZ(0);cursor:move}.ReactCrop--disabled .ReactCrop__crop-selection{cursor:inherit}.ReactCrop--circular-crop .ReactCrop__crop-selection{border-radius:50%}.ReactCrop--circular-crop .ReactCrop__crop-selection:after{pointer-events:none;content:"";position:absolute;top:-1px;right:-1px;bottom:-1px;left:-1px;border:1px solid var(--rc-border-color);opacity:.3}.ReactCrop--no-animate .ReactCrop__crop-selection{outline:1px dashed white}.ReactCrop__crop-selection:not(.ReactCrop--no-animate .ReactCrop__crop-selection){animation:marching-ants 1s;background-image:linear-gradient(to right,#fff 50%,#444 50%),linear-gradient(to right,#fff 50%,#444 50%),linear-gradient(to bottom,#fff 50%,#444 50%),linear-gradient(to bottom,#fff 50%,#444 50%);background-size:10px 1px,10px 1px,1px 10px,1px 10px;background-position:0 0,0 100%,0 0,100% 0;background-repeat:repeat-x,repeat-x,repeat-y,repeat-y;color:#fff;animation-play-state:running;animation-timing-function:linear;animation-iteration-count:infinite}.ReactCrop__crop-selection:focus{outline:2px solid var(--rc-focus-color);outline-offset:-1px}.ReactCrop--invisible-crop .ReactCrop__crop-mask,.ReactCrop--invisible-crop .ReactCrop__crop-selection{display:none}.ReactCrop__rule-of-thirds-vt:before,.ReactCrop__rule-of-thirds-vt:after,.ReactCrop__rule-of-thirds-hz:before,.ReactCrop__rule-of-thirds-hz:after{content:"";display:block;position:absolute;background-color:#fff6}.ReactCrop__rule-of-thirds-vt:before,.ReactCrop__rule-of-thirds-vt:after{width:1px;height:100%}.ReactCrop__rule-of-thirds-vt:before{left:33.3333333333%}.ReactCrop__rule-of-thirds-vt:after{left:66.6666666667%}.ReactCrop__rule-of-thirds-hz:before,.ReactCrop__rule-of-thirds-hz:after{width:100%;height:1px}.ReactCrop__rule-of-thirds-hz:before{top:33.3333333333%}.ReactCrop__rule-of-thirds-hz:after{top:66.6666666667%}.ReactCrop__drag-handle{position:absolute;width:var(--rc-drag-handle-size);height:var(--rc-drag-handle-size);background-color:var(--rc-drag-handle-bg-colour);border:1px solid var(--rc-border-color)}.ReactCrop__drag-handle:focus{background:var(--rc-focus-color)}.ReactCrop .ord-nw{top:0;left:0;transform:translate(-50%,-50%);cursor:nw-resize}.ReactCrop .ord-n{top:0;left:50%;transform:translate(-50%,-50%);cursor:n-resize}.ReactCrop .ord-ne{top:0;right:0;transform:translate(50%,-50%);cursor:ne-resize}.ReactCrop .ord-e{top:50%;right:0;transform:translate(50%,-50%);cursor:e-resize}.ReactCrop .ord-se{bottom:0;right:0;transform:translate(50%,50%);cursor:se-resize}.ReactCrop .ord-s{bottom:0;left:50%;transform:translate(-50%,50%);cursor:s-resize}.ReactCrop .ord-sw{bottom:0;left:0;transform:translate(-50%,50%);cursor:sw-resize}.ReactCrop .ord-w{top:50%;left:0;transform:translate(-50%,-50%);cursor:w-resize}.ReactCrop__disabled .ReactCrop__drag-handle{cursor:inherit}.ReactCrop__drag-bar{position:absolute}.ReactCrop__drag-bar.ord-n{top:0;left:0;width:100%;height:var(--rc-drag-bar-size);transform:translateY(-50%)}.ReactCrop__drag-bar.ord-e{right:0;top:0;width:var(--rc-drag-bar-size);height:100%;transform:translate(50%)}.ReactCrop__drag-bar.ord-s{bottom:0;left:0;width:100%;height:var(--rc-drag-bar-size);transform:translateY(50%)}.ReactCrop__drag-bar.ord-w{top:0;left:0;width:var(--rc-drag-bar-size);height:100%;transform:translate(-50%)}.ReactCrop--new-crop .ReactCrop__drag-bar,.ReactCrop--new-crop .ReactCrop__drag-handle,.ReactCrop--fixed-aspect .ReactCrop__drag-bar,.ReactCrop--fixed-aspect .ReactCrop__drag-handle.ord-n,.ReactCrop--fixed-aspect .ReactCrop__drag-handle.ord-e,.ReactCrop--fixed-aspect .ReactCrop__drag-handle.ord-s,.ReactCrop--fixed-aspect .ReactCrop__drag-handle.ord-w{display:none}@media (pointer: coarse){.ReactCrop .ord-n,.ReactCrop .ord-e,.ReactCrop .ord-s,.ReactCrop .ord-w{display:none}.ReactCrop__drag-handle{width:var(--rc-drag-handle-mobile-size);height:var(--rc-drag-handle-mobile-size)}}
++@keyframes marching-ants {
++  0% {
++    background-position: 0 0, 0 100%, 0 0, 100% 0;
++  }
++  100% {
++    background-position: 20px 0, -20px 100%, 0 -20px, 100% 20px;
++  }
++}
++:root {
++  --rc-drag-handle-size: 12px;
++  --rc-drag-handle-mobile-size: 24px;
++  --rc-drag-handle-bg-colour: rgba(0, 0, 0, 0.2);
++  --rc-drag-bar-size: 6px;
++  --rc-border-color: rgba(255, 255, 255, 0.7);
++  --rc-focus-color: #0088ff;
++}
++
++.ReactCrop {
++  position: relative;
++  display: inline-block;
++  cursor: crosshair;
++  max-width: 100%;
++}
++.ReactCrop *, .ReactCrop *::before, .ReactCrop *::after {
++  box-sizing: border-box;
++}
++.ReactCrop--disabled, .ReactCrop--locked {
++  cursor: inherit;
++}
++.ReactCrop__child-wrapper {
++  overflow: hidden;
++  max-height: inherit;
++}
++.ReactCrop__child-wrapper > img, .ReactCrop__child-wrapper > video {
++  display: block;
++  max-width: 100%;
++  max-height: inherit;
++}
++.ReactCrop:not(.ReactCrop--disabled) .ReactCrop__child-wrapper > img, .ReactCrop:not(.ReactCrop--disabled) .ReactCrop__child-wrapper > video {
++  touch-action: none;
++}
++.ReactCrop:not(.ReactCrop--disabled) .ReactCrop__crop-selection {
++  touch-action: none;
++}
++.ReactCrop__crop-mask {
++  position: absolute;
++  top: 0;
++  right: 0;
++  bottom: 0;
++  left: 0;
++  pointer-events: none;
++  width: calc(100% + 0.5px);
++  height: calc(100% + 0.5px);
++}
++.ReactCrop__crop-selection {
++  position: absolute;
++  top: 0;
++  left: 0;
++  transform: translate3d(0, 0, 0);
++  cursor: move;
++}
++.ReactCrop--disabled .ReactCrop__crop-selection {
++  cursor: inherit;
++}
++.ReactCrop--circular-crop .ReactCrop__crop-selection {
++  border-radius: 50%;
++}
++.ReactCrop--circular-crop .ReactCrop__crop-selection::after {
++  pointer-events: none;
++  content: "";
++  position: absolute;
++  top: -1px;
++  right: -1px;
++  bottom: -1px;
++  left: -1px;
++  border: 1px solid var(--rc-border-color);
++  opacity: 0.3;
++}
++.ReactCrop--no-animate .ReactCrop__crop-selection {
++  outline: 1px dashed white;
++}
++.ReactCrop__crop-selection:not(.ReactCrop--no-animate .ReactCrop__crop-selection) {
++  animation: marching-ants 1s;
++  background-image: linear-gradient(to right, #fff 50%, #444 50%), linear-gradient(to right, #fff 50%, #444 50%), linear-gradient(to bottom, #fff 50%, #444 50%), linear-gradient(to bottom, #fff 50%, #444 50%);
++  background-size: 10px 1px, 10px 1px, 1px 10px, 1px 10px;
++  background-position: 0 0, 0 100%, 0 0, 100% 0;
++  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
++  color: #fff;
++  animation-play-state: running;
++  animation-timing-function: linear;
++  animation-iteration-count: infinite;
++}
++.ReactCrop__crop-selection:focus {
++  outline: 2px solid var(--rc-focus-color);
++  outline-offset: -1px;
++}
++.ReactCrop--invisible-crop .ReactCrop__crop-mask, .ReactCrop--invisible-crop .ReactCrop__crop-selection {
++  display: none;
++}
++.ReactCrop__rule-of-thirds-vt::before, .ReactCrop__rule-of-thirds-vt::after, .ReactCrop__rule-of-thirds-hz::before, .ReactCrop__rule-of-thirds-hz::after {
++  content: "";
++  display: block;
++  position: absolute;
++  background-color: rgba(255, 255, 255, 0.4);
++}
++.ReactCrop__rule-of-thirds-vt::before, .ReactCrop__rule-of-thirds-vt::after {
++  width: 1px;
++  height: 100%;
++}
++.ReactCrop__rule-of-thirds-vt::before {
++  left: 33.3333%;
++  left: 33.3333333333%;
++}
++.ReactCrop__rule-of-thirds-vt::after {
++  left: 66.6666%;
++  left: 66.6666666667%;
++}
++.ReactCrop__rule-of-thirds-hz::before, .ReactCrop__rule-of-thirds-hz::after {
++  width: 100%;
++  height: 1px;
++}
++.ReactCrop__rule-of-thirds-hz::before {
++  top: 33.3333%;
++  top: 33.3333333333%;
++}
++.ReactCrop__rule-of-thirds-hz::after {
++  top: 66.6666%;
++  top: 66.6666666667%;
++}
++.ReactCrop__drag-handle {
++  position: absolute;
++  width: var(--rc-drag-handle-size);
++  height: var(--rc-drag-handle-size);
++  background-color: var(--rc-drag-handle-bg-colour);
++  border: 1px solid var(--rc-border-color);
++}
++.ReactCrop__drag-handle:focus {
++  background: var(--rc-focus-color);
++}
++.ReactCrop .ord-nw {
++  top: 0;
++  left: 0;
++  transform: translate(-50%, -50%);
++  cursor: nw-resize;
++}
++.ReactCrop .ord-n {
++  top: 0;
++  left: 50%;
++  transform: translate(-50%, -50%);
++  cursor: n-resize;
++}
++.ReactCrop .ord-ne {
++  top: 0;
++  right: 0;
++  transform: translate(50%, -50%);
++  cursor: ne-resize;
++}
++.ReactCrop .ord-e {
++  top: 50%;
++  right: 0;
++  transform: translate(50%, -50%);
++  cursor: e-resize;
++}
++.ReactCrop .ord-se {
++  bottom: 0;
++  right: 0;
++  transform: translate(50%, 50%);
++  cursor: se-resize;
++}
++.ReactCrop .ord-s {
++  bottom: 0;
++  left: 50%;
++  transform: translate(-50%, 50%);
++  cursor: s-resize;
++}
++.ReactCrop .ord-sw {
++  bottom: 0;
++  left: 0;
++  transform: translate(-50%, 50%);
++  cursor: sw-resize;
++}
++.ReactCrop .ord-w {
++  top: 50%;
++  left: 0;
++  transform: translate(-50%, -50%);
++  cursor: w-resize;
++}
++.ReactCrop__disabled .ReactCrop__drag-handle {
++  cursor: inherit;
++}
++.ReactCrop__drag-bar {
++  position: absolute;
++}
++.ReactCrop__drag-bar.ord-n {
++  top: 0;
++  left: 0;
++  width: 100%;
++  height: var(--rc-drag-bar-size);
++  transform: translateY(-50%);
++}
++.ReactCrop__drag-bar.ord-e {
++  right: 0;
++  top: 0;
++  width: var(--rc-drag-bar-size);
++  height: 100%;
++  transform: translateX(50%);
++}
++.ReactCrop__drag-bar.ord-s {
++  bottom: 0;
++  left: 0;
++  width: 100%;
++  height: var(--rc-drag-bar-size);
++  transform: translateY(50%);
++}
++.ReactCrop__drag-bar.ord-w {
++  top: 0;
++  left: 0;
++  width: var(--rc-drag-bar-size);
++  height: 100%;
++  transform: translateX(-50%);
++}
++.ReactCrop--new-crop .ReactCrop__drag-bar, .ReactCrop--new-crop .ReactCrop__drag-handle, .ReactCrop--fixed-aspect.ReactCrop--hide-edge-handles-when-aspect-locked .ReactCrop__drag-bar {
++  display: none;
++}
++.ReactCrop--fixed-aspect.ReactCrop--hide-edge-handles-when-aspect-locked .ReactCrop__drag-handle.ord-n, .ReactCrop--fixed-aspect.ReactCrop--hide-edge-handles-when-aspect-locked .ReactCrop__drag-handle.ord-e, .ReactCrop--fixed-aspect.ReactCrop--hide-edge-handles-when-aspect-locked .ReactCrop__drag-handle.ord-s, .ReactCrop--fixed-aspect.ReactCrop--hide-edge-handles-when-aspect-locked .ReactCrop__drag-handle.ord-w {
++  display: none;
++}
++@media (pointer: coarse) {
++  .ReactCrop .ord-n,
++  .ReactCrop .ord-e,
++  .ReactCrop .ord-s,
++  .ReactCrop .ord-w {
++    display: none;
++  }
++  .ReactCrop--fixed-aspect:not(.ReactCrop--hide-edge-handles-when-aspect-locked) .ReactCrop__drag-handle.ord-n, .ReactCrop--fixed-aspect:not(.ReactCrop--hide-edge-handles-when-aspect-locked) .ReactCrop__drag-handle.ord-e, .ReactCrop--fixed-aspect:not(.ReactCrop--hide-edge-handles-when-aspect-locked) .ReactCrop__drag-handle.ord-s, .ReactCrop--fixed-aspect:not(.ReactCrop--hide-edge-handles-when-aspect-locked) .ReactCrop__drag-handle.ord-w {
++    display: block;
++  }
++  .ReactCrop__drag-handle {
++    width: var(--rc-drag-handle-mobile-size);
++    height: var(--rc-drag-handle-mobile-size);
++  }
++}
+diff --git a/node_modules/react-image-crop/dist/index.d.ts b/node_modules/react-image-crop/dist/index.d.ts
+index 6c71049..c37ea4e 100644
+--- a/node_modules/react-image-crop/dist/index.d.ts
++++ b/node_modules/react-image-crop/dist/index.d.ts
+@@ -157,6 +157,12 @@ export declare interface ReactCropProps {
+     locked?: boolean;
+     /** If true is passed then selection can't be disabled if the user clicks outside the selection area. */
+     keepSelection?: boolean;
++    /**
++     * When `crop` and `aspect` are set, edge drag handles (N/E/S/W) and their drag bars are hidden by default.
++     * Set to `false` to keep them visible. Resizing from an edge then keeps the opposite edge centered
++     * (horizontal center for N/S, vertical center for E/W). Defaults to `true` for backwards compatibility.
++     */
++    hideEdgeHandlesWhenAspectLocked?: boolean;
+     /** A minimum crop width, in pixels. */
+     minWidth?: number;
+     /** A minimum crop height, in pixels. */
+diff --git a/node_modules/react-image-crop/dist/index.js b/node_modules/react-image-crop/dist/index.js
+index eda2f94..d483b59 100644
+--- a/node_modules/react-image-crop/dist/index.js
++++ b/node_modules/react-image-crop/dist/index.js
+@@ -1,459 +1,990 @@
+-var _ = Object.defineProperty;
+-var $ = (a, h, e) => h in a ? _(a, h, { enumerable: !0, configurable: !0, writable: !0, value: e }) : a[h] = e;
+-var m = (a, h, e) => $(a, typeof h != "symbol" ? h + "" : h, e);
+-import u, { PureComponent as K, createRef as P } from "react";
+-const E = {
++// src/utils.ts
++var defaultCrop = {
+   x: 0,
+   y: 0,
+   width: 0,
+   height: 0,
+   unit: "px"
+-}, b = (a, h, e) => Math.min(Math.max(a, h), e), H = (...a) => a.filter((h) => h && typeof h == "string").join(" "), X = (a, h) => a === h || a.width === h.width && a.height === h.height && a.x === h.x && a.y === h.y && a.unit === h.unit;
+-function B(a, h, e, n) {
+-  const t = D(a, e, n);
+-  return a.width && (t.height = t.width / h), a.height && (t.width = t.height * h), t.y + t.height > n && (t.height = n - t.y, t.width = t.height * h), t.x + t.width > e && (t.width = e - t.x, t.height = t.width / h), a.unit === "%" ? v(t, e, n) : t;
++};
++var clamp = (num, min, max) => Math.min(Math.max(num, min), max);
++var cls = (...args) => args.filter((v) => v && typeof v === "string").join(" ");
++var areCropsEqual = (cropA, cropB) => cropA === cropB || cropA.width === cropB.width && cropA.height === cropB.height && cropA.x === cropB.x && cropA.y === cropB.y && cropA.unit === cropB.unit;
++function makeAspectCrop(crop, aspect, containerWidth, containerHeight) {
++  const pixelCrop = convertToPixelCrop(crop, containerWidth, containerHeight);
++  if (crop.width) {
++    pixelCrop.height = pixelCrop.width / aspect;
++  }
++  if (crop.height) {
++    pixelCrop.width = pixelCrop.height * aspect;
++  }
++  if (pixelCrop.y + pixelCrop.height > containerHeight) {
++    pixelCrop.height = containerHeight - pixelCrop.y;
++    pixelCrop.width = pixelCrop.height * aspect;
++  }
++  if (pixelCrop.x + pixelCrop.width > containerWidth) {
++    pixelCrop.width = containerWidth - pixelCrop.x;
++    pixelCrop.height = pixelCrop.width / aspect;
++  }
++  if (crop.unit === "%") {
++    return convertToPercentCrop(pixelCrop, containerWidth, containerHeight);
++  }
++  return pixelCrop;
+ }
+-function L(a, h, e) {
+-  const n = D(a, h, e);
+-  return n.x = (h - n.width) / 2, n.y = (e - n.height) / 2, a.unit === "%" ? v(n, h, e) : n;
++function centerCrop(crop, containerWidth, containerHeight) {
++  const pixelCrop = convertToPixelCrop(crop, containerWidth, containerHeight);
++  pixelCrop.x = (containerWidth - pixelCrop.width) / 2;
++  pixelCrop.y = (containerHeight - pixelCrop.height) / 2;
++  if (crop.unit === "%") {
++    return convertToPercentCrop(pixelCrop, containerWidth, containerHeight);
++  }
++  return pixelCrop;
+ }
+-function v(a, h, e) {
+-  return a.unit === "%" ? { ...E, ...a, unit: "%" } : {
++function convertToPercentCrop(crop, containerWidth, containerHeight) {
++  if (crop.unit === "%") {
++    return { ...defaultCrop, ...crop, unit: "%" };
++  }
++  return {
+     unit: "%",
+-    x: a.x ? a.x / h * 100 : 0,
+-    y: a.y ? a.y / e * 100 : 0,
+-    width: a.width ? a.width / h * 100 : 0,
+-    height: a.height ? a.height / e * 100 : 0
++    x: crop.x ? crop.x / containerWidth * 100 : 0,
++    y: crop.y ? crop.y / containerHeight * 100 : 0,
++    width: crop.width ? crop.width / containerWidth * 100 : 0,
++    height: crop.height ? crop.height / containerHeight * 100 : 0
+   };
+ }
+-function D(a, h, e) {
+-  return a.unit ? a.unit === "px" ? { ...E, ...a, unit: "px" } : {
++function convertToPixelCrop(crop, containerWidth, containerHeight) {
++  if (!crop.unit) {
++    return { ...defaultCrop, ...crop, unit: "px" };
++  }
++  if (crop.unit === "px") {
++    return { ...defaultCrop, ...crop, unit: "px" };
++  }
++  return {
+     unit: "px",
+-    x: a.x ? a.x * h / 100 : 0,
+-    y: a.y ? a.y * e / 100 : 0,
+-    width: a.width ? a.width * h / 100 : 0,
+-    height: a.height ? a.height * e / 100 : 0
+-  } : { ...E, ...a, unit: "px" };
+-}
+-function k(a, h, e, n, t, d = 0, r = 0, o = n, w = t) {
+-  const i = { ...a };
+-  let s = Math.min(d, n), c = Math.min(r, t), g = Math.min(o, n), p = Math.min(w, t);
+-  h && (h > 1 ? (s = r ? r * h : s, c = s / h, g = o * h) : (c = d ? d / h : c, s = c * h, p = w / h)), i.y < 0 && (i.height = Math.max(i.height + i.y, c), i.y = 0), i.x < 0 && (i.width = Math.max(i.width + i.x, s), i.x = 0);
+-  const l = n - (i.x + i.width);
+-  l < 0 && (i.x = Math.min(i.x, n - s), i.width += l);
+-  const C = t - (i.y + i.height);
+-  if (C < 0 && (i.y = Math.min(i.y, t - c), i.height += C), i.width < s && ((e === "sw" || e == "nw") && (i.x -= s - i.width), i.width = s), i.height < c && ((e === "nw" || e == "ne") && (i.y -= c - i.height), i.height = c), i.width > g && ((e === "sw" || e == "nw") && (i.x -= g - i.width), i.width = g), i.height > p && ((e === "nw" || e == "ne") && (i.y -= p - i.height), i.height = p), h) {
+-    const y = i.width / i.height;
+-    if (y < h) {
+-      const f = Math.max(i.width / h, c);
+-      (e === "nw" || e == "ne") && (i.y -= f - i.height), i.height = f;
+-    } else if (y > h) {
+-      const f = Math.max(i.height * h, s);
+-      (e === "sw" || e == "nw") && (i.x -= f - i.width), i.width = f;
+-    }
+-  }
+-  return i;
+-}
+-function I(a, h, e, n) {
+-  const t = { ...a };
+-  return h === "ArrowLeft" ? n === "nw" ? (t.x -= e, t.y -= e, t.width += e, t.height += e) : n === "w" ? (t.x -= e, t.width += e) : n === "sw" ? (t.x -= e, t.width += e, t.height += e) : n === "ne" ? (t.y += e, t.width -= e, t.height -= e) : n === "e" ? t.width -= e : n === "se" && (t.width -= e, t.height -= e) : h === "ArrowRight" && (n === "nw" ? (t.x += e, t.y += e, t.width -= e, t.height -= e) : n === "w" ? (t.x += e, t.width -= e) : n === "sw" ? (t.x += e, t.width -= e, t.height -= e) : n === "ne" ? (t.y -= e, t.width += e, t.height += e) : n === "e" ? t.width += e : n === "se" && (t.width += e, t.height += e)), h === "ArrowUp" ? n === "nw" ? (t.x -= e, t.y -= e, t.width += e, t.height += e) : n === "n" ? (t.y -= e, t.height += e) : n === "ne" ? (t.y -= e, t.width += e, t.height += e) : n === "sw" ? (t.x += e, t.width -= e, t.height -= e) : n === "s" ? t.height -= e : n === "se" && (t.width -= e, t.height -= e) : h === "ArrowDown" && (n === "nw" ? (t.x += e, t.y += e, t.width -= e, t.height -= e) : n === "n" ? (t.y += e, t.height -= e) : n === "ne" ? (t.y += e, t.width -= e, t.height -= e) : n === "sw" ? (t.x -= e, t.width += e, t.height += e) : n === "s" ? t.height += e : n === "se" && (t.width += e, t.height += e)), t;
++    x: crop.x ? crop.x * containerWidth / 100 : 0,
++    y: crop.y ? crop.y * containerHeight / 100 : 0,
++    width: crop.width ? crop.width * containerWidth / 100 : 0,
++    height: crop.height ? crop.height * containerHeight / 100 : 0
++  };
+ }
+-const M = { capture: !0, passive: !1 };
+-let N = 0;
+-const x = class x extends K {
+-  constructor() {
+-    super(...arguments);
+-    m(this, "docMoveBound", !1);
+-    m(this, "mouseDownOnCrop", !1);
+-    m(this, "dragStarted", !1);
+-    m(this, "evData", {
+-      startClientX: 0,
+-      startClientY: 0,
+-      startCropX: 0,
+-      startCropY: 0,
+-      clientX: 0,
+-      clientY: 0,
+-      isResize: !0
+-    });
+-    m(this, "componentRef", P());
+-    m(this, "mediaRef", P());
+-    m(this, "resizeObserver");
+-    m(this, "initChangeCalled", !1);
+-    m(this, "instanceId", `rc-${N++}`);
+-    m(this, "state", {
+-      cropIsActive: !1,
+-      newCropIsBeingDrawn: !1
+-    });
+-    m(this, "onCropPointerDown", (e) => {
+-      const { crop: n, disabled: t } = this.props, d = this.getBox();
+-      if (!n)
+-        return;
+-      const r = D(n, d.width, d.height);
+-      if (t)
+-        return;
+-      e.cancelable && e.preventDefault(), this.bindDocMove(), this.componentRef.current.focus({ preventScroll: !0 });
+-      const o = e.target.dataset.ord, w = !!o;
+-      let i = e.clientX, s = e.clientY, c = r.x, g = r.y;
+-      if (o) {
+-        const p = e.clientX - d.x, l = e.clientY - d.y;
+-        let C = 0, y = 0;
+-        o === "ne" || o == "e" ? (C = p - (r.x + r.width), y = l - r.y, c = r.x, g = r.y + r.height) : o === "se" || o === "s" ? (C = p - (r.x + r.width), y = l - (r.y + r.height), c = r.x, g = r.y) : o === "sw" || o == "w" ? (C = p - r.x, y = l - (r.y + r.height), c = r.x + r.width, g = r.y) : (o === "nw" || o == "n") && (C = p - r.x, y = l - r.y, c = r.x + r.width, g = r.y + r.height), i = c + d.x + C, s = g + d.y + y;
+-      }
+-      this.evData = {
+-        startClientX: i,
+-        startClientY: s,
+-        startCropX: c,
+-        startCropY: g,
+-        clientX: e.clientX,
+-        clientY: e.clientY,
+-        isResize: w,
+-        ord: o
+-      }, this.mouseDownOnCrop = !0, this.setState({ cropIsActive: !0 });
+-    });
+-    m(this, "onComponentPointerDown", (e) => {
+-      const { crop: n, disabled: t, locked: d, keepSelection: r, onChange: o } = this.props, w = this.getBox();
+-      if (t || d || r && n)
+-        return;
+-      e.cancelable && e.preventDefault(), this.bindDocMove(), this.componentRef.current.focus({ preventScroll: !0 });
+-      const i = e.clientX - w.x, s = e.clientY - w.y, c = {
+-        unit: "px",
+-        x: i,
+-        y: s,
+-        width: 0,
+-        height: 0
+-      };
+-      this.evData = {
+-        startClientX: e.clientX,
+-        startClientY: e.clientY,
+-        startCropX: i,
+-        startCropY: s,
+-        clientX: e.clientX,
+-        clientY: e.clientY,
+-        isResize: !0
+-      }, this.mouseDownOnCrop = !0, o(D(c, w.width, w.height), v(c, w.width, w.height)), this.setState({ cropIsActive: !0, newCropIsBeingDrawn: !0 });
+-    });
+-    m(this, "onDocPointerMove", (e) => {
+-      const { crop: n, disabled: t, onChange: d, onDragStart: r } = this.props, o = this.getBox();
+-      if (t || !n || !this.mouseDownOnCrop)
+-        return;
+-      e.cancelable && e.preventDefault(), this.dragStarted || (this.dragStarted = !0, r && r(e));
+-      const { evData: w } = this;
+-      w.clientX = e.clientX, w.clientY = e.clientY;
+-      let i;
+-      w.isResize ? i = this.resizeCrop() : i = this.dragCrop(), X(n, i) || d(
+-        D(i, o.width, o.height),
+-        v(i, o.width, o.height)
+-      );
+-    });
+-    m(this, "onComponentKeyDown", (e) => {
+-      const { crop: n, disabled: t, onChange: d, onComplete: r } = this.props;
+-      if (t)
+-        return;
+-      const o = e.key;
+-      let w = !1;
+-      if (!n)
+-        return;
+-      const i = this.getBox(), s = this.makePixelCrop(i), g = (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) ? x.nudgeStepLarge : e.shiftKey ? x.nudgeStepMedium : x.nudgeStep;
+-      if (o === "ArrowLeft" ? (s.x -= g, w = !0) : o === "ArrowRight" ? (s.x += g, w = !0) : o === "ArrowUp" ? (s.y -= g, w = !0) : o === "ArrowDown" && (s.y += g, w = !0), w) {
+-        e.cancelable && e.preventDefault(), s.x = b(s.x, 0, i.width - s.width), s.y = b(s.y, 0, i.height - s.height);
+-        const p = D(s, i.width, i.height), l = v(s, i.width, i.height);
+-        d(p, l), r && r(p, l);
++function containCrop(pixelCrop, aspect, ord, containerWidth, containerHeight, minWidth = 0, minHeight = 0, maxWidth = containerWidth, maxHeight = containerHeight) {
++  const containedCrop = { ...pixelCrop };
++  let _minWidth = Math.min(minWidth, containerWidth);
++  let _minHeight = Math.min(minHeight, containerHeight);
++  let _maxWidth = Math.min(maxWidth, containerWidth);
++  let _maxHeight = Math.min(maxHeight, containerHeight);
++  if (aspect) {
++    if (aspect > 1) {
++      _minWidth = minHeight ? minHeight * aspect : _minWidth;
++      _minHeight = _minWidth / aspect;
++      _maxWidth = maxWidth * aspect;
++    } else {
++      _minHeight = minWidth ? minWidth / aspect : _minHeight;
++      _minWidth = _minHeight * aspect;
++      _maxHeight = maxHeight / aspect;
++    }
++  }
++  if (containedCrop.y < 0) {
++    containedCrop.height = Math.max(containedCrop.height + containedCrop.y, _minHeight);
++    containedCrop.y = 0;
++  }
++  if (containedCrop.x < 0) {
++    containedCrop.width = Math.max(containedCrop.width + containedCrop.x, _minWidth);
++    containedCrop.x = 0;
++  }
++  const xOverflow = containerWidth - (containedCrop.x + containedCrop.width);
++  if (xOverflow < 0) {
++    containedCrop.x = Math.min(containedCrop.x, containerWidth - _minWidth);
++    containedCrop.width += xOverflow;
++  }
++  const yOverflow = containerHeight - (containedCrop.y + containedCrop.height);
++  if (yOverflow < 0) {
++    containedCrop.y = Math.min(containedCrop.y, containerHeight - _minHeight);
++    containedCrop.height += yOverflow;
++  }
++  if (containedCrop.width < _minWidth) {
++    if (ord === "sw" || ord == "nw") {
++      containedCrop.x -= _minWidth - containedCrop.width;
++    }
++    containedCrop.width = _minWidth;
++  }
++  if (containedCrop.height < _minHeight) {
++    if (ord === "nw" || ord == "ne") {
++      containedCrop.y -= _minHeight - containedCrop.height;
++    }
++    containedCrop.height = _minHeight;
++  }
++  if (containedCrop.width > _maxWidth) {
++    if (ord === "sw" || ord == "nw") {
++      containedCrop.x -= _maxWidth - containedCrop.width;
++    }
++    containedCrop.width = _maxWidth;
++  }
++  if (containedCrop.height > _maxHeight) {
++    if (ord === "nw" || ord == "ne") {
++      containedCrop.y -= _maxHeight - containedCrop.height;
++    }
++    containedCrop.height = _maxHeight;
++  }
++  if (aspect) {
++    const currAspect = containedCrop.width / containedCrop.height;
++    if (currAspect < aspect) {
++      const newHeight = Math.max(containedCrop.width / aspect, _minHeight);
++      if (ord === "nw" || ord == "ne") {
++        containedCrop.y -= newHeight - containedCrop.height;
+       }
+-    });
+-    m(this, "onHandlerKeyDown", (e, n) => {
+-      const {
+-        aspect: t = 0,
+-        crop: d,
+-        disabled: r,
+-        minWidth: o = 0,
+-        minHeight: w = 0,
+-        maxWidth: i,
+-        maxHeight: s,
+-        onChange: c,
+-        onComplete: g
+-      } = this.props, p = this.getBox();
+-      if (r || !d)
+-        return;
+-      if (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "ArrowLeft" || e.key === "ArrowRight")
+-        e.stopPropagation(), e.preventDefault();
+-      else
+-        return;
+-      const C = (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) ? x.nudgeStepLarge : e.shiftKey ? x.nudgeStepMedium : x.nudgeStep, y = D(d, p.width, p.height), f = I(y, e.key, C, n), R = k(
+-        f,
+-        t,
+-        n,
+-        p.width,
+-        p.height,
+-        o,
+-        w,
+-        i,
+-        s
+-      );
+-      if (!X(d, R)) {
+-        const Y = v(R, p.width, p.height);
+-        c(R, Y), g && g(R, Y);
++      containedCrop.height = newHeight;
++    } else if (currAspect > aspect) {
++      const newWidth = Math.max(containedCrop.height * aspect, _minWidth);
++      if (ord === "sw" || ord == "nw") {
++        containedCrop.x -= newWidth - containedCrop.width;
+       }
+-    });
+-    m(this, "onDocPointerDone", (e) => {
+-      const { crop: n, disabled: t, onComplete: d, onDragEnd: r } = this.props, o = this.getBox();
+-      this.unbindDocMove(), !(t || !n) && this.mouseDownOnCrop && (this.mouseDownOnCrop = !1, this.dragStarted = !1, r && r(e), d && d(D(n, o.width, o.height), v(n, o.width, o.height)), this.setState({ cropIsActive: !1, newCropIsBeingDrawn: !1 }));
+-    });
+-    m(this, "onDragFocus", () => {
+-      var e;
+-      (e = this.componentRef.current) == null || e.scrollTo(0, 0);
+-    });
++      containedCrop.width = newWidth;
++    }
++  }
++  return containedCrop;
++}
++function nudgeCrop(pixelCrop, key, offset, ord) {
++  const nextCrop = { ...pixelCrop };
++  if (key === "ArrowLeft") {
++    if (ord === "nw") {
++      nextCrop.x -= offset;
++      nextCrop.y -= offset;
++      nextCrop.width += offset;
++      nextCrop.height += offset;
++    } else if (ord === "w") {
++      nextCrop.x -= offset;
++      nextCrop.width += offset;
++    } else if (ord === "sw") {
++      nextCrop.x -= offset;
++      nextCrop.width += offset;
++      nextCrop.height += offset;
++    } else if (ord === "ne") {
++      nextCrop.y += offset;
++      nextCrop.width -= offset;
++      nextCrop.height -= offset;
++    } else if (ord === "e") {
++      nextCrop.width -= offset;
++    } else if (ord === "se") {
++      nextCrop.width -= offset;
++      nextCrop.height -= offset;
++    }
++  } else if (key === "ArrowRight") {
++    if (ord === "nw") {
++      nextCrop.x += offset;
++      nextCrop.y += offset;
++      nextCrop.width -= offset;
++      nextCrop.height -= offset;
++    } else if (ord === "w") {
++      nextCrop.x += offset;
++      nextCrop.width -= offset;
++    } else if (ord === "sw") {
++      nextCrop.x += offset;
++      nextCrop.width -= offset;
++      nextCrop.height -= offset;
++    } else if (ord === "ne") {
++      nextCrop.y -= offset;
++      nextCrop.width += offset;
++      nextCrop.height += offset;
++    } else if (ord === "e") {
++      nextCrop.width += offset;
++    } else if (ord === "se") {
++      nextCrop.width += offset;
++      nextCrop.height += offset;
++    }
++  }
++  if (key === "ArrowUp") {
++    if (ord === "nw") {
++      nextCrop.x -= offset;
++      nextCrop.y -= offset;
++      nextCrop.width += offset;
++      nextCrop.height += offset;
++    } else if (ord === "n") {
++      nextCrop.y -= offset;
++      nextCrop.height += offset;
++    } else if (ord === "ne") {
++      nextCrop.y -= offset;
++      nextCrop.width += offset;
++      nextCrop.height += offset;
++    } else if (ord === "sw") {
++      nextCrop.x += offset;
++      nextCrop.width -= offset;
++      nextCrop.height -= offset;
++    } else if (ord === "s") {
++      nextCrop.height -= offset;
++    } else if (ord === "se") {
++      nextCrop.width -= offset;
++      nextCrop.height -= offset;
++    }
++  } else if (key === "ArrowDown") {
++    if (ord === "nw") {
++      nextCrop.x += offset;
++      nextCrop.y += offset;
++      nextCrop.width -= offset;
++      nextCrop.height -= offset;
++    } else if (ord === "n") {
++      nextCrop.y += offset;
++      nextCrop.height -= offset;
++    } else if (ord === "ne") {
++      nextCrop.y += offset;
++      nextCrop.width -= offset;
++      nextCrop.height -= offset;
++    } else if (ord === "sw") {
++      nextCrop.x -= offset;
++      nextCrop.width += offset;
++      nextCrop.height += offset;
++    } else if (ord === "s") {
++      nextCrop.height += offset;
++    } else if (ord === "se") {
++      nextCrop.width += offset;
++      nextCrop.height += offset;
++    }
+   }
++  return nextCrop;
++}
++
++// src/ReactCrop.tsx
++import { PureComponent, createRef } from "react";
++import { Fragment, jsx, jsxs } from "react/jsx-runtime";
++var DOC_MOVE_OPTS = { capture: true, passive: false };
++var instanceCount = 0;
++var ReactCrop = class _ReactCrop extends PureComponent {
++  static xOrds = ["e", "w"];
++  static yOrds = ["n", "s"];
++  static xyOrds = ["nw", "ne", "se", "sw"];
++  static nudgeStep = 1;
++  static nudgeStepMedium = 10;
++  static nudgeStepLarge = 100;
++  static defaultProps = {
++    ariaLabels: {
++      cropArea: "Use the arrow keys to move the crop selection area",
++      nwDragHandle: "Use the arrow keys to move the north west drag handle to change the crop selection area",
++      nDragHandle: "Use the up and down arrow keys to move the north drag handle to change the crop selection area",
++      neDragHandle: "Use the arrow keys to move the north east drag handle to change the crop selection area",
++      eDragHandle: "Use the up and down arrow keys to move the east drag handle to change the crop selection area",
++      seDragHandle: "Use the arrow keys to move the south east drag handle to change the crop selection area",
++      sDragHandle: "Use the up and down arrow keys to move the south drag handle to change the crop selection area",
++      swDragHandle: "Use the arrow keys to move the south west drag handle to change the crop selection area",
++      wDragHandle: "Use the up and down arrow keys to move the west drag handle to change the crop selection area"
++    },
++    hideEdgeHandlesWhenAspectLocked: true
++  };
+   get document() {
+     return document;
+   }
++  docMoveBound = false;
++  mouseDownOnCrop = false;
++  dragStarted = false;
++  evData = {
++    startClientX: 0,
++    startClientY: 0,
++    startCropX: 0,
++    startCropY: 0,
++    clientX: 0,
++    clientY: 0,
++    isResize: true
++  };
++  componentRef = createRef();
++  mediaRef = createRef();
++  resizeObserver;
++  initChangeCalled = false;
++  instanceId = `rc-${instanceCount++}`;
++  state = {
++    cropIsActive: false,
++    newCropIsBeingDrawn: false
++  };
+   // We unfortunately get the bounding box every time as x+y changes
+   // due to scrolling.
+   getBox() {
+-    const e = this.mediaRef.current;
+-    if (!e)
++    const el = this.mediaRef.current;
++    if (!el) {
+       return { x: 0, y: 0, width: 0, height: 0 };
+-    const { x: n, y: t, width: d, height: r } = e.getBoundingClientRect();
+-    return { x: n, y: t, width: d, height: r };
++    }
++    const { x, y, width, height } = el.getBoundingClientRect();
++    return { x, y, width, height };
+   }
+-  componentDidUpdate(e) {
+-    const { crop: n, onComplete: t } = this.props;
+-    if (t && !e.crop && n) {
+-      const { width: d, height: r } = this.getBox();
+-      d && r && t(D(n, d, r), v(n, d, r));
++  componentDidUpdate(prevProps) {
++    const { crop, onComplete } = this.props;
++    if (onComplete && !prevProps.crop && crop) {
++      const { width, height } = this.getBox();
++      if (width && height) {
++        onComplete(convertToPixelCrop(crop, width, height), convertToPercentCrop(crop, width, height));
++      }
+     }
+   }
+   componentWillUnmount() {
+-    this.resizeObserver && this.resizeObserver.disconnect(), this.unbindDocMove();
++    if (this.resizeObserver) {
++      this.resizeObserver.disconnect();
++    }
++    this.unbindDocMove();
+   }
+   bindDocMove() {
+-    this.docMoveBound || (this.document.addEventListener("pointermove", this.onDocPointerMove, M), this.document.addEventListener("pointerup", this.onDocPointerDone, M), this.document.addEventListener("pointercancel", this.onDocPointerDone, M), this.docMoveBound = !0);
++    if (this.docMoveBound) {
++      return;
++    }
++    this.document.addEventListener("pointermove", this.onDocPointerMove, DOC_MOVE_OPTS);
++    this.document.addEventListener("pointerup", this.onDocPointerDone, DOC_MOVE_OPTS);
++    this.document.addEventListener("pointercancel", this.onDocPointerDone, DOC_MOVE_OPTS);
++    this.docMoveBound = true;
+   }
+   unbindDocMove() {
+-    this.docMoveBound && (this.document.removeEventListener("pointermove", this.onDocPointerMove, M), this.document.removeEventListener("pointerup", this.onDocPointerDone, M), this.document.removeEventListener("pointercancel", this.onDocPointerDone, M), this.docMoveBound = !1);
++    if (!this.docMoveBound) {
++      return;
++    }
++    this.document.removeEventListener("pointermove", this.onDocPointerMove, DOC_MOVE_OPTS);
++    this.document.removeEventListener("pointerup", this.onDocPointerDone, DOC_MOVE_OPTS);
++    this.document.removeEventListener("pointercancel", this.onDocPointerDone, DOC_MOVE_OPTS);
++    this.docMoveBound = false;
+   }
++  onCropPointerDown = (e) => {
++    const { crop, disabled } = this.props;
++    const box = this.getBox();
++    if (!crop) {
++      return;
++    }
++    const pixelCrop = convertToPixelCrop(crop, box.width, box.height);
++    if (disabled) {
++      return;
++    }
++    if (e.cancelable) e.preventDefault();
++    this.bindDocMove();
++    this.componentRef.current.focus({ preventScroll: true });
++    const ord = e.target.dataset.ord;
++    const isResize = Boolean(ord);
++    let startClientX = e.clientX;
++    let startClientY = e.clientY;
++    let startCropX = pixelCrop.x;
++    let startCropY = pixelCrop.y;
++    if (ord) {
++      const relativeX = e.clientX - box.x;
++      const relativeY = e.clientY - box.y;
++      let fromCornerX = 0;
++      let fromCornerY = 0;
++      if (ord === "ne" || ord == "e") {
++        fromCornerX = relativeX - (pixelCrop.x + pixelCrop.width);
++        fromCornerY = relativeY - pixelCrop.y;
++        startCropX = pixelCrop.x;
++        startCropY = pixelCrop.y + pixelCrop.height;
++      } else if (ord === "se" || ord === "s") {
++        fromCornerX = relativeX - (pixelCrop.x + pixelCrop.width);
++        fromCornerY = relativeY - (pixelCrop.y + pixelCrop.height);
++        startCropX = pixelCrop.x;
++        startCropY = pixelCrop.y;
++      } else if (ord === "sw" || ord == "w") {
++        fromCornerX = relativeX - pixelCrop.x;
++        fromCornerY = relativeY - (pixelCrop.y + pixelCrop.height);
++        startCropX = pixelCrop.x + pixelCrop.width;
++        startCropY = pixelCrop.y;
++      } else if (ord === "nw" || ord == "n") {
++        fromCornerX = relativeX - pixelCrop.x;
++        fromCornerY = relativeY - pixelCrop.y;
++        startCropX = pixelCrop.x + pixelCrop.width;
++        startCropY = pixelCrop.y + pixelCrop.height;
++      }
++      startClientX = startCropX + box.x + fromCornerX;
++      startClientY = startCropY + box.y + fromCornerY;
++    }
++    const fixedAspectEdge = this.props.aspect && ord && (ord === "n" || ord === "s" || ord === "e" || ord === "w") ? {
++      fixedAspectEdgeResizeStart: { ...pixelCrop, unit: "px" },
++      fixedAspectEdgePointerClientX: e.clientX,
++      fixedAspectEdgePointerClientY: e.clientY
++    } : {
++      fixedAspectEdgeResizeStart: void 0,
++      fixedAspectEdgePointerClientX: void 0,
++      fixedAspectEdgePointerClientY: void 0
++    };
++    this.evData = {
++      startClientX,
++      startClientY,
++      startCropX,
++      startCropY,
++      clientX: e.clientX,
++      clientY: e.clientY,
++      isResize,
++      ord,
++      ...fixedAspectEdge
++    };
++    this.mouseDownOnCrop = true;
++    this.setState({ cropIsActive: true });
++  };
++  onComponentPointerDown = (e) => {
++    const { crop, disabled, locked, keepSelection, onChange } = this.props;
++    const box = this.getBox();
++    if (disabled || locked || keepSelection && crop) {
++      return;
++    }
++    if (e.cancelable) e.preventDefault();
++    this.bindDocMove();
++    this.componentRef.current.focus({ preventScroll: true });
++    const cropX = e.clientX - box.x;
++    const cropY = e.clientY - box.y;
++    const nextCrop = {
++      unit: "px",
++      x: cropX,
++      y: cropY,
++      width: 0,
++      height: 0
++    };
++    this.evData = {
++      startClientX: e.clientX,
++      startClientY: e.clientY,
++      startCropX: cropX,
++      startCropY: cropY,
++      clientX: e.clientX,
++      clientY: e.clientY,
++      isResize: true,
++      fixedAspectEdgeResizeStart: void 0,
++      fixedAspectEdgePointerClientX: void 0,
++      fixedAspectEdgePointerClientY: void 0
++    };
++    this.mouseDownOnCrop = true;
++    onChange(convertToPixelCrop(nextCrop, box.width, box.height), convertToPercentCrop(nextCrop, box.width, box.height));
++    this.setState({ cropIsActive: true, newCropIsBeingDrawn: true });
++  };
++  onDocPointerMove = (e) => {
++    const { crop, disabled, onChange, onDragStart } = this.props;
++    const box = this.getBox();
++    if (disabled || !crop || !this.mouseDownOnCrop) {
++      return;
++    }
++    if (e.cancelable) e.preventDefault();
++    if (!this.dragStarted) {
++      this.dragStarted = true;
++      if (onDragStart) {
++        onDragStart(e);
++      }
++    }
++    const { evData } = this;
++    evData.clientX = e.clientX;
++    evData.clientY = e.clientY;
++    let nextCrop;
++    if (evData.isResize) {
++      nextCrop = this.resizeCrop();
++    } else {
++      nextCrop = this.dragCrop();
++    }
++    if (!areCropsEqual(crop, nextCrop)) {
++      onChange(
++        convertToPixelCrop(nextCrop, box.width, box.height),
++        convertToPercentCrop(nextCrop, box.width, box.height)
++      );
++    }
++  };
++  onComponentKeyDown = (e) => {
++    const { crop, disabled, onChange, onComplete } = this.props;
++    if (disabled) {
++      return;
++    }
++    const keyCode = e.key;
++    let nudged = false;
++    if (!crop) {
++      return;
++    }
++    const box = this.getBox();
++    const nextCrop = this.makePixelCrop(box);
++    const ctrlCmdPressed = navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey;
++    const nudgeStep = ctrlCmdPressed ? _ReactCrop.nudgeStepLarge : e.shiftKey ? _ReactCrop.nudgeStepMedium : _ReactCrop.nudgeStep;
++    if (keyCode === "ArrowLeft") {
++      nextCrop.x -= nudgeStep;
++      nudged = true;
++    } else if (keyCode === "ArrowRight") {
++      nextCrop.x += nudgeStep;
++      nudged = true;
++    } else if (keyCode === "ArrowUp") {
++      nextCrop.y -= nudgeStep;
++      nudged = true;
++    } else if (keyCode === "ArrowDown") {
++      nextCrop.y += nudgeStep;
++      nudged = true;
++    }
++    if (nudged) {
++      if (e.cancelable) e.preventDefault();
++      nextCrop.x = clamp(nextCrop.x, 0, box.width - nextCrop.width);
++      nextCrop.y = clamp(nextCrop.y, 0, box.height - nextCrop.height);
++      const pixelCrop = convertToPixelCrop(nextCrop, box.width, box.height);
++      const percentCrop = convertToPercentCrop(nextCrop, box.width, box.height);
++      onChange(pixelCrop, percentCrop);
++      if (onComplete) {
++        onComplete(pixelCrop, percentCrop);
++      }
++    }
++  };
++  onHandlerKeyDown = (e, ord) => {
++    const {
++      aspect = 0,
++      crop,
++      disabled,
++      minWidth = 0,
++      minHeight = 0,
++      maxWidth,
++      maxHeight,
++      onChange,
++      onComplete
++    } = this.props;
++    const box = this.getBox();
++    if (disabled || !crop) {
++      return;
++    }
++    if (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "ArrowLeft" || e.key === "ArrowRight") {
++      e.stopPropagation();
++      e.preventDefault();
++    } else {
++      return;
++    }
++    const ctrlCmdPressed = navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey;
++    const offset = ctrlCmdPressed ? _ReactCrop.nudgeStepLarge : e.shiftKey ? _ReactCrop.nudgeStepMedium : _ReactCrop.nudgeStep;
++    const pixelCrop = convertToPixelCrop(crop, box.width, box.height);
++    const nudgedCrop = nudgeCrop(pixelCrop, e.key, offset, ord);
++    const containedCrop = containCrop(
++      nudgedCrop,
++      aspect,
++      ord,
++      box.width,
++      box.height,
++      minWidth,
++      minHeight,
++      maxWidth,
++      maxHeight
++    );
++    if (!areCropsEqual(crop, containedCrop)) {
++      const percentCrop = convertToPercentCrop(containedCrop, box.width, box.height);
++      onChange(containedCrop, percentCrop);
++      if (onComplete) {
++        onComplete(containedCrop, percentCrop);
++      }
++    }
++  };
++  onDocPointerDone = (e) => {
++    const { crop, disabled, onComplete, onDragEnd } = this.props;
++    const box = this.getBox();
++    this.unbindDocMove();
++    if (disabled || !crop) {
++      return;
++    }
++    if (this.mouseDownOnCrop) {
++      this.mouseDownOnCrop = false;
++      this.dragStarted = false;
++      onDragEnd && onDragEnd(e);
++      onComplete && onComplete(convertToPixelCrop(crop, box.width, box.height), convertToPercentCrop(crop, box.width, box.height));
++      this.setState({ cropIsActive: false, newCropIsBeingDrawn: false });
++    }
++  };
++  onDragFocus = () => {
++    this.componentRef.current?.scrollTo(0, 0);
++  };
+   getCropStyle() {
+-    const { crop: e } = this.props;
+-    if (e)
+-      return {
+-        top: `${e.y}${e.unit}`,
+-        left: `${e.x}${e.unit}`,
+-        width: `${e.width}${e.unit}`,
+-        height: `${e.height}${e.unit}`
+-      };
++    const { crop } = this.props;
++    if (!crop) {
++      return void 0;
++    }
++    return {
++      top: `${crop.y}${crop.unit}`,
++      left: `${crop.x}${crop.unit}`,
++      width: `${crop.width}${crop.unit}`,
++      height: `${crop.height}${crop.unit}`
++    };
+   }
+   dragCrop() {
+-    const { evData: e } = this, n = this.getBox(), t = this.makePixelCrop(n), d = e.clientX - e.startClientX, r = e.clientY - e.startClientY;
+-    return t.x = b(e.startCropX + d, 0, n.width - t.width), t.y = b(e.startCropY + r, 0, n.height - t.height), t;
++    const { evData } = this;
++    const box = this.getBox();
++    const nextCrop = this.makePixelCrop(box);
++    const xDiff = evData.clientX - evData.startClientX;
++    const yDiff = evData.clientY - evData.startClientY;
++    nextCrop.x = clamp(evData.startCropX + xDiff, 0, box.width - nextCrop.width);
++    nextCrop.y = clamp(evData.startCropY + yDiff, 0, box.height - nextCrop.height);
++    return nextCrop;
+   }
+-  getPointRegion(e, n, t, d) {
+-    const { evData: r } = this, o = r.clientX - e.x, w = r.clientY - e.y;
+-    let i;
+-    d && n ? i = n === "nw" || n === "n" || n === "ne" : i = w < r.startCropY;
+-    let s;
+-    return t && n ? s = n === "nw" || n === "w" || n === "sw" : s = o < r.startCropX, s ? i ? "nw" : "sw" : i ? "ne" : "se";
++  getPointRegion(box, origOrd, minWidth, minHeight) {
++    const { evData } = this;
++    const relativeX = evData.clientX - box.x;
++    const relativeY = evData.clientY - box.y;
++    let topHalf;
++    if (minHeight && origOrd) {
++      topHalf = origOrd === "nw" || origOrd === "n" || origOrd === "ne";
++    } else {
++      topHalf = relativeY < evData.startCropY;
++    }
++    let leftHalf;
++    if (minWidth && origOrd) {
++      leftHalf = origOrd === "nw" || origOrd === "w" || origOrd === "sw";
++    } else {
++      leftHalf = relativeX < evData.startCropX;
++    }
++    if (leftHalf) {
++      return topHalf ? "nw" : "sw";
++    } else {
++      return topHalf ? "ne" : "se";
++    }
+   }
+-  resolveMinDimensions(e, n, t = 0, d = 0) {
+-    const r = Math.min(t, e.width), o = Math.min(d, e.height);
+-    return !n || !r && !o ? [r, o] : n > 1 ? r ? [r, r / n] : [o * n, o] : o ? [o * n, o] : [r, r / n];
++  resolveMinDimensions(box, aspect, minWidth = 0, minHeight = 0) {
++    const mw = Math.min(minWidth, box.width);
++    const mh = Math.min(minHeight, box.height);
++    if (!aspect || !mw && !mh) {
++      return [mw, mh];
++    }
++    if (aspect > 1) {
++      return mw ? [mw, mw / aspect] : [mh * aspect, mh];
++    } else {
++      return mh ? [mh * aspect, mh] : [mw, mw / aspect];
++    }
++  }
++  /**
++   * When aspect is locked, N/S/E/W drags use centered opposite edges instead of corner anchors.
++   */
++  resizeCropFromFixedAspectEdge(aspect, box, minWidth, minHeight, maxWidth, maxHeight) {
++    const { evData } = this;
++    const { ord } = evData;
++    if (!ord || !evData.fixedAspectEdgeResizeStart) {
++      return null;
++    }
++    if (ord !== "n" && ord !== "s" && ord !== "e" && ord !== "w") {
++      return null;
++    }
++    const bounds = evData.fixedAspectEdgeResizeStart;
++    const deltaX = evData.clientX - evData.fixedAspectEdgePointerClientX;
++    const deltaY = evData.clientY - evData.fixedAspectEdgePointerClientY;
++    const horizontalMidpoint = bounds.x + bounds.width / 2;
++    const verticalMidpoint = bounds.y + bounds.height / 2;
++    const tmpCrop = { unit: "px", x: 0, y: 0, width: 0, height: 0 };
++    if (ord === "n") {
++      const bottomEdge = bounds.y + bounds.height;
++      tmpCrop.y = bounds.y + deltaY;
++      tmpCrop.height = bottomEdge - tmpCrop.y;
++      tmpCrop.width = tmpCrop.height * aspect;
++      tmpCrop.x = horizontalMidpoint - tmpCrop.width / 2;
++    } else if (ord === "s") {
++      tmpCrop.y = bounds.y;
++      tmpCrop.height = bounds.height + deltaY;
++      tmpCrop.width = tmpCrop.height * aspect;
++      tmpCrop.x = horizontalMidpoint - tmpCrop.width / 2;
++    } else if (ord === "e") {
++      tmpCrop.x = bounds.x;
++      tmpCrop.width = bounds.width + deltaX;
++      tmpCrop.height = tmpCrop.width / aspect;
++      tmpCrop.y = verticalMidpoint - tmpCrop.height / 2;
++    } else {
++      const rightEdge = bounds.x + bounds.width;
++      tmpCrop.width = bounds.width - deltaX;
++      tmpCrop.height = tmpCrop.width / aspect;
++      tmpCrop.x = rightEdge - tmpCrop.width;
++      tmpCrop.y = verticalMidpoint - tmpCrop.height / 2;
++    }
++    const containOrd = ord === "n" ? "nw" : ord === "s" ? "se" : ord === "e" ? "ne" : "sw";
++    const contained = containCrop(
++      tmpCrop,
++      aspect,
++      containOrd,
++      box.width,
++      box.height,
++      minWidth,
++      minHeight,
++      maxWidth,
++      maxHeight
++    );
++    const nextCrop = { ...contained };
++    if (ord === "n" || ord === "s") {
++      nextCrop.x = clamp(horizontalMidpoint - nextCrop.width / 2, 0, box.width - nextCrop.width);
++    } else {
++      nextCrop.y = clamp(verticalMidpoint - nextCrop.height / 2, 0, box.height - nextCrop.height);
++    }
++    nextCrop.x = clamp(nextCrop.x, 0, box.width - nextCrop.width);
++    nextCrop.y = clamp(nextCrop.y, 0, box.height - nextCrop.height);
++    return nextCrop;
+   }
+   resizeCrop() {
+-    const { evData: e } = this, { aspect: n = 0, maxWidth: t, maxHeight: d } = this.props, r = this.getBox(), [o, w] = this.resolveMinDimensions(r, n, this.props.minWidth, this.props.minHeight);
+-    let i = this.makePixelCrop(r);
+-    const s = this.getPointRegion(r, e.ord, o, w), c = e.ord || s;
+-    let g = e.clientX - e.startClientX, p = e.clientY - e.startClientY;
+-    (o && c === "nw" || c === "w" || c === "sw") && (g = Math.min(g, -o)), (w && c === "nw" || c === "n" || c === "ne") && (p = Math.min(p, -w));
+-    const l = {
++    const { evData } = this;
++    const { aspect = 0, maxWidth, maxHeight } = this.props;
++    const box = this.getBox();
++    const [minWidth, minHeight] = this.resolveMinDimensions(box, aspect, this.props.minWidth, this.props.minHeight);
++    if (aspect) {
++      const fromEdge = this.resizeCropFromFixedAspectEdge(aspect, box, minWidth, minHeight, maxWidth, maxHeight);
++      if (fromEdge) {
++        return fromEdge;
++      }
++    }
++    let nextCrop = this.makePixelCrop(box);
++    const area = this.getPointRegion(box, evData.ord, minWidth, minHeight);
++    const ord = evData.ord || area;
++    let xDiff = evData.clientX - evData.startClientX;
++    let yDiff = evData.clientY - evData.startClientY;
++    if (minWidth && ord === "nw" || ord === "w" || ord === "sw") {
++      xDiff = Math.min(xDiff, -minWidth);
++    }
++    if (minHeight && ord === "nw" || ord === "n" || ord === "ne") {
++      yDiff = Math.min(yDiff, -minHeight);
++    }
++    const tmpCrop = {
+       unit: "px",
+       x: 0,
+       y: 0,
+       width: 0,
+       height: 0
+     };
+-    s === "ne" ? (l.x = e.startCropX, l.width = g, n ? (l.height = l.width / n, l.y = e.startCropY - l.height) : (l.height = Math.abs(p), l.y = e.startCropY - l.height)) : s === "se" ? (l.x = e.startCropX, l.y = e.startCropY, l.width = g, n ? l.height = l.width / n : l.height = p) : s === "sw" ? (l.x = e.startCropX + g, l.y = e.startCropY, l.width = Math.abs(g), n ? l.height = l.width / n : l.height = p) : s === "nw" && (l.x = e.startCropX + g, l.width = Math.abs(g), n ? (l.height = l.width / n, l.y = e.startCropY - l.height) : (l.height = Math.abs(p), l.y = e.startCropY + p));
+-    const C = k(
+-      l,
+-      n,
+-      s,
+-      r.width,
+-      r.height,
+-      o,
+-      w,
+-      t,
+-      d
++    if (area === "ne") {
++      tmpCrop.x = evData.startCropX;
++      tmpCrop.width = xDiff;
++      if (aspect) {
++        tmpCrop.height = tmpCrop.width / aspect;
++        tmpCrop.y = evData.startCropY - tmpCrop.height;
++      } else {
++        tmpCrop.height = Math.abs(yDiff);
++        tmpCrop.y = evData.startCropY - tmpCrop.height;
++      }
++    } else if (area === "se") {
++      tmpCrop.x = evData.startCropX;
++      tmpCrop.y = evData.startCropY;
++      tmpCrop.width = xDiff;
++      if (aspect) {
++        tmpCrop.height = tmpCrop.width / aspect;
++      } else {
++        tmpCrop.height = yDiff;
++      }
++    } else if (area === "sw") {
++      tmpCrop.x = evData.startCropX + xDiff;
++      tmpCrop.y = evData.startCropY;
++      tmpCrop.width = Math.abs(xDiff);
++      if (aspect) {
++        tmpCrop.height = tmpCrop.width / aspect;
++      } else {
++        tmpCrop.height = yDiff;
++      }
++    } else if (area === "nw") {
++      tmpCrop.x = evData.startCropX + xDiff;
++      tmpCrop.width = Math.abs(xDiff);
++      if (aspect) {
++        tmpCrop.height = tmpCrop.width / aspect;
++        tmpCrop.y = evData.startCropY - tmpCrop.height;
++      } else {
++        tmpCrop.height = Math.abs(yDiff);
++        tmpCrop.y = evData.startCropY + yDiff;
++      }
++    }
++    const containedCrop = containCrop(
++      tmpCrop,
++      aspect,
++      area,
++      box.width,
++      box.height,
++      minWidth,
++      minHeight,
++      maxWidth,
++      maxHeight
+     );
+-    return n || x.xyOrds.indexOf(c) > -1 ? i = C : x.xOrds.indexOf(c) > -1 ? (i.x = C.x, i.width = C.width) : x.yOrds.indexOf(c) > -1 && (i.y = C.y, i.height = C.height), i.x = b(i.x, 0, r.width - i.width), i.y = b(i.y, 0, r.height - i.height), i;
++    if (aspect || _ReactCrop.xyOrds.indexOf(ord) > -1) {
++      nextCrop = containedCrop;
++    } else if (_ReactCrop.xOrds.indexOf(ord) > -1) {
++      nextCrop.x = containedCrop.x;
++      nextCrop.width = containedCrop.width;
++    } else if (_ReactCrop.yOrds.indexOf(ord) > -1) {
++      nextCrop.y = containedCrop.y;
++      nextCrop.height = containedCrop.height;
++    }
++    nextCrop.x = clamp(nextCrop.x, 0, box.width - nextCrop.width);
++    nextCrop.y = clamp(nextCrop.y, 0, box.height - nextCrop.height);
++    return nextCrop;
+   }
+   renderCropSelection() {
+     const {
+-      ariaLabels: e = x.defaultProps.ariaLabels,
+-      disabled: n,
+-      locked: t,
+-      renderSelectionAddon: d,
+-      ruleOfThirds: r,
+-      crop: o
+-    } = this.props, w = this.getCropStyle();
+-    if (o)
+-      return /* @__PURE__ */ u.createElement(
+-        "div",
+-        {
+-          style: w,
+-          className: "ReactCrop__crop-selection",
+-          onPointerDown: this.onCropPointerDown,
+-          "aria-label": e.cropArea,
+-          tabIndex: 0,
+-          onKeyDown: this.onComponentKeyDown,
+-          role: "group"
+-        },
+-        !n && !t && /* @__PURE__ */ u.createElement("div", { className: "ReactCrop__drag-elements", onFocus: this.onDragFocus }, /* @__PURE__ */ u.createElement("div", { className: "ReactCrop__drag-bar ord-n", "data-ord": "n" }), /* @__PURE__ */ u.createElement("div", { className: "ReactCrop__drag-bar ord-e", "data-ord": "e" }), /* @__PURE__ */ u.createElement("div", { className: "ReactCrop__drag-bar ord-s", "data-ord": "s" }), /* @__PURE__ */ u.createElement("div", { className: "ReactCrop__drag-bar ord-w", "data-ord": "w" }), /* @__PURE__ */ u.createElement(
+-          "div",
+-          {
+-            className: "ReactCrop__drag-handle ord-nw",
+-            "data-ord": "nw",
+-            tabIndex: 0,
+-            "aria-label": e.nwDragHandle,
+-            onKeyDown: (i) => this.onHandlerKeyDown(i, "nw"),
+-            role: "button"
+-          }
+-        ), /* @__PURE__ */ u.createElement(
+-          "div",
+-          {
+-            className: "ReactCrop__drag-handle ord-n",
+-            "data-ord": "n",
+-            tabIndex: 0,
+-            "aria-label": e.nDragHandle,
+-            onKeyDown: (i) => this.onHandlerKeyDown(i, "n"),
+-            role: "button"
+-          }
+-        ), /* @__PURE__ */ u.createElement(
+-          "div",
+-          {
+-            className: "ReactCrop__drag-handle ord-ne",
+-            "data-ord": "ne",
+-            tabIndex: 0,
+-            "aria-label": e.neDragHandle,
+-            onKeyDown: (i) => this.onHandlerKeyDown(i, "ne"),
+-            role: "button"
+-          }
+-        ), /* @__PURE__ */ u.createElement(
+-          "div",
+-          {
+-            className: "ReactCrop__drag-handle ord-e",
+-            "data-ord": "e",
+-            tabIndex: 0,
+-            "aria-label": e.eDragHandle,
+-            onKeyDown: (i) => this.onHandlerKeyDown(i, "e"),
+-            role: "button"
+-          }
+-        ), /* @__PURE__ */ u.createElement(
+-          "div",
+-          {
+-            className: "ReactCrop__drag-handle ord-se",
+-            "data-ord": "se",
+-            tabIndex: 0,
+-            "aria-label": e.seDragHandle,
+-            onKeyDown: (i) => this.onHandlerKeyDown(i, "se"),
+-            role: "button"
+-          }
+-        ), /* @__PURE__ */ u.createElement(
+-          "div",
+-          {
+-            className: "ReactCrop__drag-handle ord-s",
+-            "data-ord": "s",
+-            tabIndex: 0,
+-            "aria-label": e.sDragHandle,
+-            onKeyDown: (i) => this.onHandlerKeyDown(i, "s"),
+-            role: "button"
+-          }
+-        ), /* @__PURE__ */ u.createElement(
+-          "div",
+-          {
+-            className: "ReactCrop__drag-handle ord-sw",
+-            "data-ord": "sw",
+-            tabIndex: 0,
+-            "aria-label": e.swDragHandle,
+-            onKeyDown: (i) => this.onHandlerKeyDown(i, "sw"),
+-            role: "button"
+-          }
+-        ), /* @__PURE__ */ u.createElement(
+-          "div",
+-          {
+-            className: "ReactCrop__drag-handle ord-w",
+-            "data-ord": "w",
+-            tabIndex: 0,
+-            "aria-label": e.wDragHandle,
+-            onKeyDown: (i) => this.onHandlerKeyDown(i, "w"),
+-            role: "button"
+-          }
+-        )),
+-        d && /* @__PURE__ */ u.createElement("div", { className: "ReactCrop__selection-addon", onPointerDown: (i) => i.stopPropagation() }, d(this.state)),
+-        r && /* @__PURE__ */ u.createElement(u.Fragment, null, /* @__PURE__ */ u.createElement("div", { className: "ReactCrop__rule-of-thirds-hz" }), /* @__PURE__ */ u.createElement("div", { className: "ReactCrop__rule-of-thirds-vt" }))
+-      );
++      ariaLabels = _ReactCrop.defaultProps.ariaLabels,
++      disabled,
++      locked,
++      renderSelectionAddon,
++      ruleOfThirds,
++      crop
++    } = this.props;
++    const style = this.getCropStyle();
++    if (!crop) {
++      return void 0;
++    }
++    return /* @__PURE__ */ jsxs(
++      "div",
++      {
++        style,
++        className: "ReactCrop__crop-selection",
++        onPointerDown: this.onCropPointerDown,
++        "aria-label": ariaLabels.cropArea,
++        tabIndex: 0,
++        onKeyDown: this.onComponentKeyDown,
++        role: "group",
++        children: [
++          !disabled && !locked && /* @__PURE__ */ jsxs("div", { className: "ReactCrop__drag-elements", onFocus: this.onDragFocus, children: [
++            /* @__PURE__ */ jsx("div", { className: "ReactCrop__drag-bar ord-n", "data-ord": "n" }),
++            /* @__PURE__ */ jsx("div", { className: "ReactCrop__drag-bar ord-e", "data-ord": "e" }),
++            /* @__PURE__ */ jsx("div", { className: "ReactCrop__drag-bar ord-s", "data-ord": "s" }),
++            /* @__PURE__ */ jsx("div", { className: "ReactCrop__drag-bar ord-w", "data-ord": "w" }),
++            /* @__PURE__ */ jsx(
++              "div",
++              {
++                className: "ReactCrop__drag-handle ord-nw",
++                "data-ord": "nw",
++                tabIndex: 0,
++                "aria-label": ariaLabels.nwDragHandle,
++                onKeyDown: (e) => this.onHandlerKeyDown(e, "nw"),
++                role: "button"
++              }
++            ),
++            /* @__PURE__ */ jsx(
++              "div",
++              {
++                className: "ReactCrop__drag-handle ord-n",
++                "data-ord": "n",
++                tabIndex: 0,
++                "aria-label": ariaLabels.nDragHandle,
++                onKeyDown: (e) => this.onHandlerKeyDown(e, "n"),
++                role: "button"
++              }
++            ),
++            /* @__PURE__ */ jsx(
++              "div",
++              {
++                className: "ReactCrop__drag-handle ord-ne",
++                "data-ord": "ne",
++                tabIndex: 0,
++                "aria-label": ariaLabels.neDragHandle,
++                onKeyDown: (e) => this.onHandlerKeyDown(e, "ne"),
++                role: "button"
++              }
++            ),
++            /* @__PURE__ */ jsx(
++              "div",
++              {
++                className: "ReactCrop__drag-handle ord-e",
++                "data-ord": "e",
++                tabIndex: 0,
++                "aria-label": ariaLabels.eDragHandle,
++                onKeyDown: (e) => this.onHandlerKeyDown(e, "e"),
++                role: "button"
++              }
++            ),
++            /* @__PURE__ */ jsx(
++              "div",
++              {
++                className: "ReactCrop__drag-handle ord-se",
++                "data-ord": "se",
++                tabIndex: 0,
++                "aria-label": ariaLabels.seDragHandle,
++                onKeyDown: (e) => this.onHandlerKeyDown(e, "se"),
++                role: "button"
++              }
++            ),
++            /* @__PURE__ */ jsx(
++              "div",
++              {
++                className: "ReactCrop__drag-handle ord-s",
++                "data-ord": "s",
++                tabIndex: 0,
++                "aria-label": ariaLabels.sDragHandle,
++                onKeyDown: (e) => this.onHandlerKeyDown(e, "s"),
++                role: "button"
++              }
++            ),
++            /* @__PURE__ */ jsx(
++              "div",
++              {
++                className: "ReactCrop__drag-handle ord-sw",
++                "data-ord": "sw",
++                tabIndex: 0,
++                "aria-label": ariaLabels.swDragHandle,
++                onKeyDown: (e) => this.onHandlerKeyDown(e, "sw"),
++                role: "button"
++              }
++            ),
++            /* @__PURE__ */ jsx(
++              "div",
++              {
++                className: "ReactCrop__drag-handle ord-w",
++                "data-ord": "w",
++                tabIndex: 0,
++                "aria-label": ariaLabels.wDragHandle,
++                onKeyDown: (e) => this.onHandlerKeyDown(e, "w"),
++                role: "button"
++              }
++            )
++          ] }),
++          renderSelectionAddon && /* @__PURE__ */ jsx("div", { className: "ReactCrop__selection-addon", onPointerDown: (e) => e.stopPropagation(), children: renderSelectionAddon(this.state) }),
++          ruleOfThirds && /* @__PURE__ */ jsxs(Fragment, { children: [
++            /* @__PURE__ */ jsx("div", { className: "ReactCrop__rule-of-thirds-hz" }),
++            /* @__PURE__ */ jsx("div", { className: "ReactCrop__rule-of-thirds-vt" })
++          ] })
++        ]
++      }
++    );
+   }
+-  makePixelCrop(e) {
+-    const n = { ...E, ...this.props.crop || {} };
+-    return D(n, e.width, e.height);
++  makePixelCrop(box) {
++    const crop = { ...defaultCrop, ...this.props.crop || {} };
++    return convertToPixelCrop(crop, box.width, box.height);
+   }
+   render() {
+-    const { aspect: e, children: n, circularCrop: t, className: d, crop: r, disabled: o, locked: w, style: i, ruleOfThirds: s } = this.props, { cropIsActive: c, newCropIsBeingDrawn: g } = this.state, p = r ? this.renderCropSelection() : null, l = H(
++    const {
++      aspect,
++      children,
++      circularCrop,
++      className,
++      crop,
++      disabled,
++      locked,
++      style,
++      ruleOfThirds,
++      hideEdgeHandlesWhenAspectLocked = true
++    } = this.props;
++    const { cropIsActive, newCropIsBeingDrawn } = this.state;
++    const cropSelection = crop ? this.renderCropSelection() : null;
++    const componentClasses = cls(
+       "ReactCrop",
+-      d,
+-      c && "ReactCrop--active",
+-      o && "ReactCrop--disabled",
+-      w && "ReactCrop--locked",
+-      g && "ReactCrop--new-crop",
+-      r && e && "ReactCrop--fixed-aspect",
+-      r && t && "ReactCrop--circular-crop",
+-      r && s && "ReactCrop--rule-of-thirds",
+-      !this.dragStarted && r && !r.width && !r.height && "ReactCrop--invisible-crop",
+-      t && "ReactCrop--no-animate"
++      className,
++      cropIsActive && "ReactCrop--active",
++      disabled && "ReactCrop--disabled",
++      locked && "ReactCrop--locked",
++      newCropIsBeingDrawn && "ReactCrop--new-crop",
++      crop && aspect && "ReactCrop--fixed-aspect",
++      crop && aspect && hideEdgeHandlesWhenAspectLocked && "ReactCrop--hide-edge-handles-when-aspect-locked",
++      crop && circularCrop && "ReactCrop--circular-crop",
++      crop && ruleOfThirds && "ReactCrop--rule-of-thirds",
++      !this.dragStarted && crop && !crop.width && !crop.height && "ReactCrop--invisible-crop",
++      circularCrop && "ReactCrop--no-animate"
+     );
+-    return /* @__PURE__ */ u.createElement("div", { ref: this.componentRef, className: l, style: i }, /* @__PURE__ */ u.createElement("div", { ref: this.mediaRef, className: "ReactCrop__child-wrapper", onPointerDown: this.onComponentPointerDown }, n), r ? /* @__PURE__ */ u.createElement("svg", { className: "ReactCrop__crop-mask", width: "100%", height: "100%" }, /* @__PURE__ */ u.createElement("defs", null, /* @__PURE__ */ u.createElement("mask", { id: `hole-${this.instanceId}` }, /* @__PURE__ */ u.createElement("rect", { width: "100%", height: "100%", fill: "white" }), t ? /* @__PURE__ */ u.createElement(
+-      "ellipse",
+-      {
+-        cx: `${r.x + r.width / 2}${r.unit}`,
+-        cy: `${r.y + r.height / 2}${r.unit}`,
+-        rx: `${r.width / 2}${r.unit}`,
+-        ry: `${r.height / 2}${r.unit}`,
+-        fill: "black"
+-      }
+-    ) : /* @__PURE__ */ u.createElement(
+-      "rect",
+-      {
+-        x: `${r.x}${r.unit}`,
+-        y: `${r.y}${r.unit}`,
+-        width: `${r.width}${r.unit}`,
+-        height: `${r.height}${r.unit}`,
+-        fill: "black"
+-      }
+-    ))), /* @__PURE__ */ u.createElement("rect", { fill: "black", fillOpacity: 0.5, width: "100%", height: "100%", mask: `url(#hole-${this.instanceId})` })) : void 0, p);
++    return /* @__PURE__ */ jsxs("div", { ref: this.componentRef, className: componentClasses, style, children: [
++      /* @__PURE__ */ jsx("div", { ref: this.mediaRef, className: "ReactCrop__child-wrapper", onPointerDown: this.onComponentPointerDown, children }),
++      crop ? /* @__PURE__ */ jsxs("svg", { className: "ReactCrop__crop-mask", width: "100%", height: "100%", children: [
++        /* @__PURE__ */ jsx("defs", { children: /* @__PURE__ */ jsxs("mask", { id: `hole-${this.instanceId}`, children: [
++          /* @__PURE__ */ jsx("rect", { width: "100%", height: "100%", fill: "white" }),
++          circularCrop ? /* @__PURE__ */ jsx(
++            "ellipse",
++            {
++              cx: `${crop.x + crop.width / 2}${crop.unit}`,
++              cy: `${crop.y + crop.height / 2}${crop.unit}`,
++              rx: `${crop.width / 2}${crop.unit}`,
++              ry: `${crop.height / 2}${crop.unit}`,
++              fill: "black"
++            }
++          ) : /* @__PURE__ */ jsx(
++            "rect",
++            {
++              x: `${crop.x}${crop.unit}`,
++              y: `${crop.y}${crop.unit}`,
++              width: `${crop.width}${crop.unit}`,
++              height: `${crop.height}${crop.unit}`,
++              fill: "black"
++            }
++          )
++        ] }) }),
++        /* @__PURE__ */ jsx("rect", { fill: "black", fillOpacity: 0.5, width: "100%", height: "100%", mask: `url(#hole-${this.instanceId})` })
++      ] }) : void 0,
++      cropSelection
++    ] });
+   }
+ };
+-m(x, "xOrds", ["e", "w"]), m(x, "yOrds", ["n", "s"]), m(x, "xyOrds", ["nw", "ne", "se", "sw"]), m(x, "nudgeStep", 1), m(x, "nudgeStepMedium", 10), m(x, "nudgeStepLarge", 100), m(x, "defaultProps", {
+-  ariaLabels: {
+-    cropArea: "Use the arrow keys to move the crop selection area",
+-    nwDragHandle: "Use the arrow keys to move the north west drag handle to change the crop selection area",
+-    nDragHandle: "Use the up and down arrow keys to move the north drag handle to change the crop selection area",
+-    neDragHandle: "Use the arrow keys to move the north east drag handle to change the crop selection area",
+-    eDragHandle: "Use the up and down arrow keys to move the east drag handle to change the crop selection area",
+-    seDragHandle: "Use the arrow keys to move the south east drag handle to change the crop selection area",
+-    sDragHandle: "Use the up and down arrow keys to move the south drag handle to change the crop selection area",
+-    swDragHandle: "Use the arrow keys to move the south west drag handle to change the crop selection area",
+-    wDragHandle: "Use the up and down arrow keys to move the west drag handle to change the crop selection area"
+-  }
+-});
+-let S = x;
+ export {
+-  S as Component,
+-  S as ReactCrop,
+-  X as areCropsEqual,
+-  L as centerCrop,
+-  b as clamp,
+-  H as cls,
+-  k as containCrop,
+-  v as convertToPercentCrop,
+-  D as convertToPixelCrop,
+-  S as default,
+-  E as defaultCrop,
+-  B as makeAspectCrop,
+-  I as nudgeCrop
++  ReactCrop as Component,
++  ReactCrop,
++  areCropsEqual,
++  centerCrop,
++  clamp,
++  cls,
++  containCrop,
++  convertToPercentCrop,
++  convertToPixelCrop,
++  ReactCrop as default,
++  defaultCrop,
++  makeAspectCrop,
++  nudgeCrop
+ };
+diff --git a/node_modules/react-image-crop/src/ReactCrop.scss b/node_modules/react-image-crop/src/ReactCrop.scss
+index 058c48c..632581e 100644
+--- a/node_modules/react-image-crop/src/ReactCrop.scss
++++ b/node_modules/react-image-crop/src/ReactCrop.scss
+@@ -283,14 +283,14 @@ $doubleAntWidth: 10px * 2;
+ 
+   &--new-crop &__drag-bar,
+   &--new-crop &__drag-handle,
+-  &--fixed-aspect &__drag-bar {
++  &--fixed-aspect#{$root}--hide-edge-handles-when-aspect-locked &__drag-bar {
+     display: none;
+   }
+ 
+-  &--fixed-aspect &__drag-handle.ord-n,
+-  &--fixed-aspect &__drag-handle.ord-e,
+-  &--fixed-aspect &__drag-handle.ord-s,
+-  &--fixed-aspect &__drag-handle.ord-w {
++  &--fixed-aspect#{$root}--hide-edge-handles-when-aspect-locked &__drag-handle.ord-n,
++  &--fixed-aspect#{$root}--hide-edge-handles-when-aspect-locked &__drag-handle.ord-e,
++  &--fixed-aspect#{$root}--hide-edge-handles-when-aspect-locked &__drag-handle.ord-s,
++  &--fixed-aspect#{$root}--hide-edge-handles-when-aspect-locked &__drag-handle.ord-w {
+     display: none;
+   }
+ 
+@@ -302,6 +302,13 @@ $doubleAntWidth: 10px * 2;
+       display: none;
+     }
+ 
++    &--fixed-aspect:not(#{$root}--hide-edge-handles-when-aspect-locked) &__drag-handle.ord-n,
++    &--fixed-aspect:not(#{$root}--hide-edge-handles-when-aspect-locked) &__drag-handle.ord-e,
++    &--fixed-aspect:not(#{$root}--hide-edge-handles-when-aspect-locked) &__drag-handle.ord-s,
++    &--fixed-aspect:not(#{$root}--hide-edge-handles-when-aspect-locked) &__drag-handle.ord-w {
++      display: block;
++    }
++
+     &__drag-handle {
+       width: var(--rc-drag-handle-mobile-size);
+       height: var(--rc-drag-handle-mobile-size);
+diff --git a/node_modules/react-image-crop/src/ReactCrop.tsx b/node_modules/react-image-crop/src/ReactCrop.tsx
+index f74f8ae..87854f6 100644
+--- a/node_modules/react-image-crop/src/ReactCrop.tsx
++++ b/node_modules/react-image-crop/src/ReactCrop.tsx
+@@ -23,6 +23,10 @@ interface EVData {
+   clientY: number
+   isResize: boolean
+   ord?: Ords
++  /** Pixel crop at pointer-down when resizing from N/S/E/W with a fixed aspect. */
++  fixedAspectEdgeResizeStart?: PixelCrop
++  fixedAspectEdgePointerClientX?: number
++  fixedAspectEdgePointerClientY?: number
+ }
+ 
+ interface Rectangle {
+@@ -65,6 +69,12 @@ export interface ReactCropProps {
+   locked?: boolean
+   /** If true is passed then selection can't be disabled if the user clicks outside the selection area. */
+   keepSelection?: boolean
++  /**
++   * When `crop` and `aspect` are set, edge drag handles (N/E/S/W) and their drag bars are hidden by default.
++   * Set to `false` to keep them visible. Resizing from an edge then keeps the opposite edge centered
++   * (horizontal center for N/S, vertical center for E/W). Defaults to `true` for backwards compatibility.
++   */
++  hideEdgeHandlesWhenAspectLocked?: boolean
+   /** A minimum crop width, in pixels. */
+   minWidth?: number
+   /** A minimum crop height, in pixels. */
+@@ -115,6 +125,7 @@ export class ReactCrop extends PureComponent<ReactCropProps, ReactCropState> {
+       swDragHandle: 'Use the arrow keys to move the south west drag handle to change the crop selection area',
+       wDragHandle: 'Use the up and down arrow keys to move the west drag handle to change the crop selection area',
+     },
++    hideEdgeHandlesWhenAspectLocked: true,
+   }
+ 
+   get document() {
+@@ -262,6 +273,21 @@ export class ReactCrop extends PureComponent<ReactCropProps, ReactCropState> {
+       startClientY = startCropY + box.y + fromCornerY
+     }
+ 
++    const fixedAspectEdge =
++      this.props.aspect &&
++      ord &&
++      (ord === 'n' || ord === 's' || ord === 'e' || ord === 'w')
++        ? {
++            fixedAspectEdgeResizeStart: { ...pixelCrop, unit: 'px' as const },
++            fixedAspectEdgePointerClientX: e.clientX,
++            fixedAspectEdgePointerClientY: e.clientY,
++          }
++        : {
++            fixedAspectEdgeResizeStart: undefined,
++            fixedAspectEdgePointerClientX: undefined,
++            fixedAspectEdgePointerClientY: undefined,
++          }
++
+     this.evData = {
+       startClientX,
+       startClientY,
+@@ -271,6 +297,7 @@ export class ReactCrop extends PureComponent<ReactCropProps, ReactCropState> {
+       clientY: e.clientY,
+       isResize,
+       ord,
++      ...fixedAspectEdge,
+     }
+ 
+     this.mouseDownOnCrop = true
+@@ -311,6 +338,9 @@ export class ReactCrop extends PureComponent<ReactCropProps, ReactCropState> {
+       clientX: e.clientX,
+       clientY: e.clientY,
+       isResize: true,
++      fixedAspectEdgeResizeStart: undefined,
++      fixedAspectEdgePointerClientX: undefined,
++      fixedAspectEdgePointerClientY: undefined,
+     }
+ 
+     this.mouseDownOnCrop = true
+@@ -569,11 +599,96 @@ export class ReactCrop extends PureComponent<ReactCropProps, ReactCropState> {
+     }
+   }
+ 
++  /**
++   * When aspect is locked, N/S/E/W drags use centered opposite edges instead of corner anchors.
++   */
++  resizeCropFromFixedAspectEdge(
++    aspect: number,
++    box: Rectangle,
++    minWidth: number,
++    minHeight: number,
++    maxWidth: number | undefined,
++    maxHeight: number | undefined
++  ): PixelCrop | null {
++    const { evData } = this
++    const { ord } = evData
++    if (!ord || !evData.fixedAspectEdgeResizeStart) {
++      return null
++    }
++    if (ord !== 'n' && ord !== 's' && ord !== 'e' && ord !== 'w') {
++      return null
++    }
++
++    const bounds = evData.fixedAspectEdgeResizeStart
++    const deltaX = evData.clientX - (evData.fixedAspectEdgePointerClientX as number)
++    const deltaY = evData.clientY - (evData.fixedAspectEdgePointerClientY as number)
++    const horizontalMidpoint = bounds.x + bounds.width / 2
++    const verticalMidpoint = bounds.y + bounds.height / 2
++
++    const tmpCrop: PixelCrop = { unit: 'px', x: 0, y: 0, width: 0, height: 0 }
++
++    if (ord === 'n') {
++      const bottomEdge = bounds.y + bounds.height
++      tmpCrop.y = bounds.y + deltaY
++      tmpCrop.height = bottomEdge - tmpCrop.y
++      tmpCrop.width = tmpCrop.height * aspect
++      tmpCrop.x = horizontalMidpoint - tmpCrop.width / 2
++    } else if (ord === 's') {
++      tmpCrop.y = bounds.y
++      tmpCrop.height = bounds.height + deltaY
++      tmpCrop.width = tmpCrop.height * aspect
++      tmpCrop.x = horizontalMidpoint - tmpCrop.width / 2
++    } else if (ord === 'e') {
++      tmpCrop.x = bounds.x
++      tmpCrop.width = bounds.width + deltaX
++      tmpCrop.height = tmpCrop.width / aspect
++      tmpCrop.y = verticalMidpoint - tmpCrop.height / 2
++    } else {
++      const rightEdge = bounds.x + bounds.width
++      tmpCrop.width = bounds.width - deltaX
++      tmpCrop.height = tmpCrop.width / aspect
++      tmpCrop.x = rightEdge - tmpCrop.width
++      tmpCrop.y = verticalMidpoint - tmpCrop.height / 2
++    }
++
++    const containOrd: Ords = ord === 'n' ? 'nw' : ord === 's' ? 'se' : ord === 'e' ? 'ne' : 'sw'
++
++    const contained = containCrop(
++      tmpCrop,
++      aspect,
++      containOrd,
++      box.width,
++      box.height,
++      minWidth,
++      minHeight,
++      maxWidth,
++      maxHeight
++    )
++
++    const nextCrop: PixelCrop = { ...contained }
++    if (ord === 'n' || ord === 's') {
++      nextCrop.x = clamp(horizontalMidpoint - nextCrop.width / 2, 0, box.width - nextCrop.width)
++    } else {
++      nextCrop.y = clamp(verticalMidpoint - nextCrop.height / 2, 0, box.height - nextCrop.height)
++    }
++    nextCrop.x = clamp(nextCrop.x, 0, box.width - nextCrop.width)
++    nextCrop.y = clamp(nextCrop.y, 0, box.height - nextCrop.height)
++    return nextCrop
++  }
++
+   resizeCrop() {
+     const { evData } = this
+     const { aspect = 0, maxWidth, maxHeight } = this.props
+     const box = this.getBox()
+     const [minWidth, minHeight] = this.resolveMinDimensions(box, aspect, this.props.minWidth, this.props.minHeight)
++
++    if (aspect) {
++      const fromEdge = this.resizeCropFromFixedAspectEdge(aspect, box, minWidth, minHeight, maxWidth, maxHeight)
++      if (fromEdge) {
++        return fromEdge
++      }
++    }
++
+     let nextCrop = this.makePixelCrop(box)
+     const area = this.getPointRegion(box, evData.ord, minWidth, minHeight)
+     const ord = evData.ord || area
+@@ -793,7 +908,18 @@ export class ReactCrop extends PureComponent<ReactCropProps, ReactCropState> {
+   }
+ 
+   render() {
+-    const { aspect, children, circularCrop, className, crop, disabled, locked, style, ruleOfThirds } = this.props
++    const {
++      aspect,
++      children,
++      circularCrop,
++      className,
++      crop,
++      disabled,
++      locked,
++      style,
++      ruleOfThirds,
++      hideEdgeHandlesWhenAspectLocked = true,
++    } = this.props
+     const { cropIsActive, newCropIsBeingDrawn } = this.state
+     const cropSelection = crop ? this.renderCropSelection() : null
+ 
+@@ -805,6 +931,7 @@ export class ReactCrop extends PureComponent<ReactCropProps, ReactCropState> {
+       locked && 'ReactCrop--locked',
+       newCropIsBeingDrawn && 'ReactCrop--new-crop',
+       crop && aspect && 'ReactCrop--fixed-aspect',
++      crop && aspect && hideEdgeHandlesWhenAspectLocked && 'ReactCrop--hide-edge-handles-when-aspect-locked',
+       crop && circularCrop && 'ReactCrop--circular-crop',
+       crop && ruleOfThirds && 'ReactCrop--rule-of-thirds',
+       !this.dragStarted && crop && !crop.width && !crop.height && 'ReactCrop--invisible-crop',
