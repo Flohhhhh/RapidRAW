@@ -19,6 +19,7 @@ import {
   CopyPlus,
   Edit,
   FileEdit,
+  FileInput,
   Folder,
   FolderInput,
   FolderPlus,
@@ -28,7 +29,6 @@ import {
   RefreshCw,
   RotateCcw,
   Star,
-  Save,
   SquaresUnite,
   Palette,
   Tag,
@@ -89,7 +89,6 @@ import {
   CopyPasteSettings,
 } from './utils/adjustments';
 import { calculateCenteredCrop } from './utils/cropUtils';
-import { generatePaletteFromImage } from './utils/palette';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import GlobalTooltip from './components/ui/GlobalTooltip';
 import { THEMES, DEFAULT_THEME_ID, ThemeProps } from './utils/themes';
@@ -339,10 +338,7 @@ function App() {
   const dragIdleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prevAdjustmentsRef = useRef<{ path: string; adjustments: Adjustments } | null>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [isAnimatingTheme, setIsAnimatingTheme] = useState(false);
-  const isInitialThemeMount = useRef(true);
   const [theme, setTheme] = useState(DEFAULT_THEME_ID);
-  const [adaptivePalette, setAdaptivePalette] = useState<any>(null);
   const [activeRightPanel, setActiveRightPanel] = useState<Panel | null>(Panel.Adjustments);
   const [slideDirection, setSlideDirection] = useState(1);
   const [activeMaskContainerId, setActiveMaskContainerId] = useState<string | null>(null);
@@ -1562,7 +1558,6 @@ function App() {
           const textDecoder = new TextDecoder();
           const prefix = textDecoder.decode(buffer.slice(0, 11));
           if (prefix === 'WGPU_RENDER') {
-            setHasRenderedFirstFrame(true);
             setInteractivePatch((prev) => {
               if (prev && prev.url) URL.revokeObjectURL(prev.url);
               return null;
@@ -1985,22 +1980,6 @@ function App() {
   }, [isWaveformVisible, activeWaveformChannel, waveformHeight, appSettings, handleSettingsChange]);
 
   useEffect(() => {
-    if (!appSettings?.adaptiveEditorTheme || !selectedImage) {
-      setAdaptivePalette(null);
-      return;
-    }
-    if (isSliderDragging || !finalPreviewUrl) {
-      return;
-    }
-    generatePaletteFromImage(finalPreviewUrl)
-      .then(setAdaptivePalette)
-      .catch((_err) => {
-        const darkTheme = THEMES.find((t) => t.id === Theme.Dark);
-        setAdaptivePalette(darkTheme ? darkTheme.cssVariables : null);
-      });
-  }, [appSettings?.adaptiveEditorTheme, selectedImage, finalPreviewUrl, isSliderDragging]);
-
-  useEffect(() => {
     const root = document.documentElement;
     const currentThemeId = theme || DEFAULT_THEME_ID;
 
@@ -2012,11 +1991,6 @@ function App() {
     }
 
     let finalCssVariables: any = { ...baseTheme.cssVariables };
-    const effectThemeForWindow = baseTheme.id;
-
-    if (adaptivePalette) {
-      finalCssVariables = { ...finalCssVariables, ...adaptivePalette };
-    }
 
     Object.entries(finalCssVariables).forEach(([key, value]) => {
       root.style.setProperty(key, value as string);
@@ -2028,22 +2002,7 @@ function App() {
         ? '-apple-system, BlinkMacSystemFont, system-ui, sans-serif'
         : "'Poppins', system-ui, sans-serif";
     root.style.setProperty('--font-family', fontStack);
-
-    const isLight = [Theme.Light, Theme.Snow, Theme.Arctic].includes(effectThemeForWindow);
-    invoke(Invokes.UpdateWindowEffect, { theme: isLight ? Theme.Light : Theme.Dark });
-  }, [theme, adaptivePalette, appSettings?.fontFamily]);
-
-  useEffect(() => {
-    if (isInitialThemeMount.current) {
-      isInitialThemeMount.current = false;
-      return;
-    }
-
-    setIsAnimatingTheme(true);
-    const timer = setTimeout(() => setIsAnimatingTheme(false), 500);
-
-    return () => clearTimeout(timer);
-  }, [theme]);
+  }, [theme, appSettings?.fontFamily]);
 
   const refreshAllFolderTrees = useCallback(
     async (currentExpanded?: Set<string>) => {
@@ -2982,17 +2941,13 @@ function App() {
         currentResRef.current = targetRes;
         applyAdjustments(currentAdjustments, false, targetRes);
       }
-    }, 100),
+    }, 50),
     [applyAdjustments],
   );
 
   useEffect(() => {
     if (selectedImage?.isReady && displaySize.width > 0 && !isSliderDragging) {
       let baseRes = calculateTargetRes();
-
-      if (isFullScreen && originalSize.width > 0 && originalSize.height > 0) {
-        baseRes = Math.max(originalSize.width, originalSize.height);
-      }
 
       if (originalSize.width > 0 && originalSize.height > 0) {
         const maxRes = Math.max(originalSize.width, originalSize.height);
@@ -3167,10 +3122,6 @@ function App() {
   useEffect(() => {
     if (showOriginal && selectedImage?.isReady && displaySize.width > 0 && !isSliderDragging) {
       let targetRes = calculateTargetRes();
-
-      if (isFullScreen && originalSize.width > 0 && originalSize.height > 0) {
-        targetRes = Math.max(originalSize.width, originalSize.height);
-      }
 
       if (targetRes > currentOriginalResRef.current) {
         requestHiFiOriginalZoom(adjustments, targetRes);
@@ -3471,6 +3422,11 @@ function App() {
             error: String(event.payload),
             progressMessage: null,
           }));
+        }
+      }),
+      listen('wgpu-frame-ready', () => {
+        if (isEffectActive) {
+          setHasRenderedFirstFrame(true);
         }
       }),
     ];
@@ -4299,7 +4255,7 @@ function App() {
     const options: Array<Option> = [
       {
         label: 'Export Image',
-        icon: Save,
+        icon: FileInput,
         onClick: () => {
           setRenderedRightPanel(Panel.Export);
           setActiveRightPanel(Panel.Export);
@@ -4420,20 +4376,26 @@ function App() {
       {
         label: 'Reset Adjustments',
         icon: RotateCcw,
-        onClick: () => {
-          debouncedSetHistory.cancel();
-          const currentRating = adjustments.rating;
-
-          const originalAspectRatio =
-            selectedImage.width && selectedImage.height ? selectedImage.width / selectedImage.height : null;
-
-          resetAdjustmentsHistory({
-            ...INITIAL_ADJUSTMENTS,
-            aspectRatio: originalAspectRatio,
-            rating: currentRating,
-            aiPatches: [],
-          });
-        },
+        submenu: [
+          { label: 'Cancel', icon: X, onClick: () => {} },
+          {
+            label: 'Confirm Reset',
+            icon: Check,
+            isDestructive: true,
+            onClick: () => {
+              debouncedSetHistory.cancel();
+              const currentRating = adjustments.rating;
+              const originalAspectRatio =
+                selectedImage.width && selectedImage.height ? selectedImage.width / selectedImage.height : null;
+              resetAdjustmentsHistory({
+                ...INITIAL_ADJUSTMENTS,
+                aspectRatio: originalAspectRatio,
+                rating: currentRating,
+                aiPatches: [],
+              });
+            },
+          },
+        ],
       },
     ];
     showContextMenu(event.clientX, event.clientY, options);
@@ -4507,7 +4469,7 @@ function App() {
       deleteSubmenu = [
         { label: 'Cancel', icon: X, onClick: () => { } },
         {
-          label: 'Confirm',
+          label: 'Confirm Delete',
           icon: Check,
           isDestructive: true,
           onClick: () => executeDelete(finalSelection, { includeAssociated: false }),
@@ -4600,7 +4562,7 @@ function App() {
             onClick: () => handleImageSelect(finalSelection[0]),
           },
           {
-            icon: Save,
+            icon: FileInput,
             label: exportLabel,
             onClick: onExportClick,
           },
@@ -4608,7 +4570,7 @@ function App() {
         ]
         : [
           {
-            icon: Save,
+            icon: FileInput,
             label: exportLabel,
             onClick: onExportClick,
           },
@@ -4820,7 +4782,19 @@ function App() {
           );
         },
       },
-      { label: resetLabel, icon: RotateCcw, onClick: () => handleResetAdjustments(finalSelection) },
+      {
+        label: resetLabel,
+        icon: RotateCcw,
+        submenu: [
+          { label: 'Cancel', icon: X, onClick: () => {} },
+          {
+            label: 'Confirm Reset',
+            icon: Check,
+            isDestructive: true,
+            onClick: () => handleResetAdjustments(finalSelection),
+          },
+        ],
+      },
       deleteOption,
     ];
     showContextMenu(event.clientX, event.clientY, options);
@@ -5507,7 +5481,6 @@ function App() {
     <div
       className={clsx(
         'flex flex-col h-screen font-sans text-text-primary overflow-hidden select-none',
-        (appSettings?.adaptiveEditorTheme || isAnimatingTheme) && !isInstantTransition && 'enable-color-transitions',
         isWgpuActive ? 'bg-transparent' : 'bg-bg-primary',
       )}
     >
