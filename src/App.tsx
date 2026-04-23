@@ -117,6 +117,8 @@ import {
   ThumbnailSize,
   ThumbnailAspectRatio,
   CullingSuggestions,
+  RejectedFilterStatus,
+  REJECTED_RATING,
 } from './components/ui/AppProperties';
 import { ChannelConfig } from './components/adjustments/Curves';
 import HdrModal from './components/modals/HdrModal';
@@ -288,6 +290,7 @@ function App() {
   const [filterCriteria, setFilterCriteria] = useState<FilterCriteria>({
     colors: [],
     rating: 0,
+    rejectedStatus: RejectedFilterStatus.All,
     rawStatus: RawStatus.All,
   });
   const [supportedTypes, setSupportedTypes] = useState<SupportedTypes | null>(null);
@@ -1191,13 +1194,22 @@ function App() {
     }
 
     const filteredList = processedList.filter((image) => {
+      const rating = imageRatings[image.path] ?? 0;
+
       if (filterCriteria.rating > 0) {
-        const rating = imageRatings[image.path] || 0;
         if (filterCriteria.rating === 5) {
           if (rating !== 5) return false;
         } else {
           if (rating < filterCriteria.rating) return false;
         }
+      }
+
+      if (filterCriteria.rejectedStatus === RejectedFilterStatus.RejectedOnly && rating !== REJECTED_RATING) {
+        return false;
+      }
+
+      if (filterCriteria.rejectedStatus === RejectedFilterStatus.UnrejectedOnly && rating === REJECTED_RATING) {
+        return false;
       }
 
       if (
@@ -1819,6 +1831,7 @@ function App() {
           setFilterCriteria((prev: FilterCriteria) => ({
             ...prev,
             ...settings.filterCriteria,
+            rejectedStatus: settings.filterCriteria.rejectedStatus || RejectedFilterStatus.All,
             rawStatus: settings.filterCriteria.rawStatus || RawStatus.All,
             colors: settings.filterCriteria.colors || [],
           }));
@@ -2742,10 +2755,41 @@ function App() {
     }
   };
 
+  const getRatingTargetPaths = useCallback(
+    (paths?: Array<string>) =>
+      paths ||
+      (multiSelectedPaths.length > 0
+        ? multiSelectedPaths
+        : selectedImage
+          ? [selectedImage.path]
+          : libraryActivePath
+            ? [libraryActivePath]
+            : []),
+    [libraryActivePath, multiSelectedPaths, selectedImage],
+  );
+
+  const applyRatingToPaths = useCallback((pathsToRate: string[], nextRating: number) => {
+    if (pathsToRate.length === 0) {
+      return;
+    }
+
+    setImageRatings((prev: Record<string, number>) => {
+      const newRatings = { ...prev };
+      pathsToRate.forEach((path: string) => {
+        newRatings[path] = nextRating;
+      });
+      return newRatings;
+    });
+
+    invoke(Invokes.SetRatingForPaths, { paths: pathsToRate, rating: nextRating }).catch((err) => {
+      console.error('Failed to apply rating to paths:', err);
+      setError(`Failed to apply rating: ${err}`);
+    });
+  }, []);
+
   const handleRate = useCallback(
     (newRating: number, paths?: Array<string>) => {
-      const pathsToRate =
-        paths || (multiSelectedPaths.length > 0 ? multiSelectedPaths : selectedImage ? [selectedImage.path] : []);
+      const pathsToRate = getRatingTargetPaths(paths);
       if (pathsToRate.length === 0) {
         return;
       }
@@ -2753,20 +2797,24 @@ function App() {
       const currentRating = imageRatings[pathsToRate[0]] || 0;
       const finalRating = newRating === currentRating ? 0 : newRating;
 
-      setImageRatings((prev: Record<string, number>) => {
-        const newRatings = { ...prev };
-        pathsToRate.forEach((path: string) => {
-          newRatings[path] = finalRating;
-        });
-        return newRatings;
-      });
-
-      invoke(Invokes.SetRatingForPaths, { paths: pathsToRate, rating: finalRating }).catch((err) => {
-        console.error('Failed to apply rating to paths:', err);
-        setError(`Failed to apply rating: ${err}`);
-      });
+      applyRatingToPaths(pathsToRate, finalRating);
     },
-    [multiSelectedPaths, selectedImage, imageRatings],
+    [applyRatingToPaths, getRatingTargetPaths, imageRatings],
+  );
+
+  const handleToggleRejected = useCallback(
+    (paths?: Array<string>) => {
+      const pathsToRate = getRatingTargetPaths(paths);
+      if (pathsToRate.length === 0) {
+        return;
+      }
+
+      const currentRating = imageRatings[pathsToRate[0]] || 0;
+      const finalRating = currentRating === REJECTED_RATING ? 0 : REJECTED_RATING;
+
+      applyRatingToPaths(pathsToRate, finalRating);
+    },
+    [applyRatingToPaths, getRatingTargetPaths, imageRatings],
   );
 
   const handleSetColorLabel = useCallback(
@@ -3186,6 +3234,7 @@ function App() {
     handlePasteAdjustments,
     handlePasteFiles,
     handleRate,
+    handleToggleRejected,
     handleRightPanelSelect,
     handleRotate,
     handleSetColorLabel,
@@ -4318,6 +4367,11 @@ function App() {
         })),
       },
       {
+        label: 'Rejected',
+        icon: X,
+        onClick: () => handleToggleRejected(),
+      },
+      {
         label: 'Color Label',
         icon: Palette,
         submenu: [
@@ -4713,6 +4767,11 @@ function App() {
           label: rating === 0 ? 'No Rating' : `${rating} Star${rating !== 1 ? 's' : ''}`,
           onClick: () => handleRate(rating, finalSelection),
         })),
+      },
+      {
+        label: 'Rejected',
+        icon: X,
+        onClick: () => handleToggleRejected(finalSelection),
       },
       {
         label: 'Color Label',
@@ -5637,7 +5696,7 @@ function App() {
         thumbnails={thumbnails}
         onApply={(action, paths) => {
           if (action === 'reject') {
-            handleSetColorLabel('red', paths);
+            applyRatingToPaths(paths, REJECTED_RATING);
           } else if (action === 'rate_zero') {
             handleRate(1, paths);
           } else if (action === 'delete') {

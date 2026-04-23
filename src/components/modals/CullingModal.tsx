@@ -29,7 +29,7 @@ const CULL_ACTIONS: {
   label: string;
   icon: React.ReactNode;
 }[] = [
-  { value: 'reject', label: 'Mark as Rejected (Red Label)', icon: <Tag size={16} className="text-red-500" /> },
+  { value: 'reject', label: 'Mark as Rejected', icon: <Tag size={16} className="text-red-500" /> },
   { value: 'rate_zero', label: 'Set Rating to 1 Stars', icon: <Star size={16} /> },
   { value: 'delete', label: 'Move to Trash', icon: <Trash2 size={16} /> },
 ];

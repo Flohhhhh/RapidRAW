@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
-import { Image as ImageIcon, Star } from 'lucide-react';
+import { Image as ImageIcon, Star, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import clsx from 'clsx';
 import { Grid, useGridCallbackRef } from 'react-window';
-import { ImageFile, SelectedImage, ThumbnailAspectRatio } from '../ui/AppProperties';
+import { ImageFile, SelectedImage, ThumbnailAspectRatio, REJECTED_RATING } from '../ui/AppProperties';
 import { Color, COLOR_LABELS } from '../../utils/adjustments';
 import Text from '../ui/Text';
 import { TextColors, TextVariants, TextWeights } from '../../types/typography';
@@ -11,6 +11,7 @@ import { TextColors, TextVariants, TextWeights } from '../../types/typography';
 const VERTICAL_PADDING = 24;
 const HORIZONTAL_PADDING = 4;
 const ITEM_GAP = 8;
+const isRejectedRating = (rating: number) => rating === REJECTED_RATING;
 
 interface ImageLayer {
   id: string;
@@ -71,6 +72,8 @@ const FilmstripThumbnail = memo(
     const rating = imageRatings?.[path] || 0;
     const colorTag = tags?.find((t: string) => t.startsWith('color:'))?.substring(6);
     const colorLabel = COLOR_LABELS.find((c: Color) => c.name === colorTag);
+    const isRejected = isRejectedRating(rating);
+    const contentOpacityClass = isRejected ? 'opacity-60' : '';
     const isVirtualCopy = path.includes('?vc=');
 
     const cleanPath = path.split('?')[0];
@@ -173,49 +176,57 @@ const FilmstripThumbnail = memo(
         }}
         data-tooltip={truncatedTitle}
       >
-        {layers.length > 0 ? (
-          <div className="absolute inset-0 w-full h-full">
-            {layers.map((layer) => (
-              <div
-                key={layer.id}
-                className="absolute inset-0 w-full h-full"
-                style={{
-                  opacity: layer.opacity,
-                  transition: 'opacity 150ms ease-in-out',
-                  willChange: 'opacity',
-                }}
-                onTransitionEnd={() => handleTransitionEnd(layer.id)}
-              >
-                {thumbnailAspectRatio === ThumbnailAspectRatio.Contain && (
+        <div className={`absolute inset-0 transition-opacity duration-150 ${contentOpacityClass}`}>
+          {layers.length > 0 ? (
+            <div className="absolute inset-0 w-full h-full">
+              {layers.map((layer) => (
+                <div
+                  key={layer.id}
+                  className="absolute inset-0 w-full h-full"
+                  style={{
+                    opacity: layer.opacity,
+                    transition: 'opacity 150ms ease-in-out',
+                    willChange: 'opacity',
+                  }}
+                  onTransitionEnd={() => handleTransitionEnd(layer.id)}
+                >
+                  {thumbnailAspectRatio === ThumbnailAspectRatio.Contain && (
+                    <img
+                      alt=""
+                      className="absolute inset-0 w-full h-full object-cover blur-md scale-110 opacity-50"
+                      src={layer.url}
+                    />
+                  )}
                   <img
-                    alt=""
-                    className="absolute inset-0 w-full h-full object-cover blur-md scale-110 opacity-50"
+                    alt={truncatedTitle}
+                    className={`${imageClasses} ${
+                      thumbnailAspectRatio === ThumbnailAspectRatio.Contain ? 'object-contain' : 'object-cover'
+                    } relative`}
+                    loading="lazy"
+                    decoding="async"
                     src={layer.url}
                   />
-                )}
-                <img
-                  alt={truncatedTitle}
-                  className={`${imageClasses} ${
-                    thumbnailAspectRatio === ThumbnailAspectRatio.Contain ? 'object-contain' : 'object-cover'
-                  } relative`}
-                  loading="lazy"
-                  decoding="async"
-                  src={layer.url}
-                />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-surface">
-            <ImageIcon size={24} className="text-text-secondary animate-pulse" />
-          </div>
-        )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-surface">
+              <ImageIcon size={24} className="text-text-secondary animate-pulse" />
+            </div>
+          )}
+        </div>
 
-        {(colorLabel || rating > 0) && (
+        {(colorLabel || rating > 0 || isRejected) && (
           <>
             <div className="absolute top-0 right-0 w-3/4 h-3/4 bg-linear-to-bl from-black/25 via-black/0 to-transparent pointer-events-none z-0" />
 
             <div className="absolute top-1 right-1 bg-primary rounded-full px-1.5 py-0.5 text-xs text-white flex items-center gap-1 backdrop-blur-xs shadow-md z-10 pointer-events-none">
+              {isRejected && (
+                <>
+                  <X size={12} className="text-red-300" />
+                  <span>Rejected</span>
+                </>
+              )}
               {colorLabel && (
                 <div
                   className="w-3 h-3 rounded-full ring-1 ring-black/20 pointer-events-auto"
@@ -223,7 +234,7 @@ const FilmstripThumbnail = memo(
                   data-tooltip={`Color: ${colorLabel.name}`}
                 />
               )}
-              {rating > 0 && (
+              {!isRejected && rating > 0 && (
                 <>
                   <span>{rating}</span>
                   <Star size={12} className="fill-white text-white" />

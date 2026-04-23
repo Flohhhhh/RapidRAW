@@ -3,7 +3,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { Check, ChevronDown, ChevronRight, Plus, Star, Tag, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import clsx from 'clsx';
-import { SelectedImage, AppSettings, Invokes } from '../../ui/AppProperties';
+import { SelectedImage, AppSettings, Invokes, REJECTED_RATING } from '../../ui/AppProperties';
 import { COLOR_LABELS, Color } from '../../../utils/adjustments';
 import Text from '../../ui/Text';
 import { TextColors, TextVariants, TextWeights } from '../../../types/typography';
@@ -289,6 +289,17 @@ export default function MetadataPanel({
                                 />
                               </button>
                             ))}
+                            <button
+                              onClick={() => onRate(rating === REJECTED_RATING ? 0 : REJECTED_RATING, [selectedImage.path])}
+                              className={clsx(
+                                'ml-2 rounded-md border px-2 py-1 text-xs transition-colors',
+                                rating === REJECTED_RATING
+                                  ? 'border-red-400 bg-red-500/10 text-red-300'
+                                  : 'border-surface bg-bg-primary text-text-secondary hover:text-text-primary',
+                              )}
+                            >
+                              Rejected
+                            </button>
                           </div>
                         </div>
                         <div>

@@ -1789,6 +1789,7 @@ export default function SettingsPanel({
                           keys={osPlatform === 'macos' ? ['Cmd', '+', 'Delete'] : ['Delete']}
                           description="Delete selected file(s)"
                         />
+                        <KeybindItem keys={['X']} description="Toggle rejected status for selected image(s)" />
                         <KeybindItem keys={['0-5']} description="Set star rating for selected image(s)" />
                         <KeybindItem keys={['Shift', '+', '0-5']} description="Set color label for selected image(s)" />
                         <KeybindItem keys={['↑', '↓', '←', '→']} description="Navigate images in library" />

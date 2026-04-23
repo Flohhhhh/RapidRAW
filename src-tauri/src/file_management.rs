@@ -118,16 +118,23 @@ pub struct SortCriteria {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct FilterCriteria {
-    pub rating: u8,
+    pub rating: i8,
+    #[serde(default = "default_rejected_status")]
+    pub rejected_status: String,
     pub raw_status: String,
     #[serde(default)]
     pub colors: Vec<String>,
+}
+
+fn default_rejected_status() -> String {
+    "all".to_string()
 }
 
 impl Default for FilterCriteria {
     fn default() -> Self {
         Self {
             rating: 0,
+            rejected_status: default_rejected_status(),
             raw_status: "all".to_string(),
             colors: Vec::new(),
         }
@@ -534,7 +541,7 @@ pub struct ImageFile {
     path: String,
     modified: u64,
     is_edited: bool,
-    rating: u8,
+    rating: i8,
     tags: Option<Vec<String>>,
     exif: Option<HashMap<String, String>>,
     is_virtual_copy: bool,
@@ -1656,7 +1663,7 @@ fn generate_single_thumbnail_and_cache(
     preloaded_image: Option<&DynamicImage>,
     force_regenerate: bool,
     app_handle: &AppHandle,
-) -> Option<(String, u8)> {
+) -> Option<(String, i8)> {
     let (source_path, sidecar_path) = parse_virtual_path(path_str);
 
     let img_mod_time = fs::metadata(source_path)
@@ -2599,7 +2606,7 @@ pub fn set_color_label_for_paths(
 #[tauri::command]
 pub fn set_rating_for_paths(
     paths: Vec<String>,
-    rating: u8,
+    rating: i8,
     app_handle: AppHandle,
 ) -> Result<(), String> {
     let settings = load_settings(app_handle.clone()).unwrap_or_default();
@@ -3831,7 +3838,7 @@ pub fn create_virtual_copy(source_virtual_path: String) -> Result<String, String
     Ok(new_virtual_path)
 }
 
-pub fn extract_xmp_rating(content: &str) -> Option<u8> {
+pub fn extract_xmp_rating(content: &str) -> Option<i8> {
     if let Some(idx) = content.find("xmp:Rating=\"") {
         let start = idx + 12;
         let end = content[start..].find('"').map(|i| start + i)?;

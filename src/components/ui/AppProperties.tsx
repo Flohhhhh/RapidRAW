@@ -19,6 +19,7 @@ export const GLOBAL_KEYS = [
   'p',
   'i',
   'e',
+  'x',
   '0',
   '1',
   '2',
@@ -124,6 +125,14 @@ export enum RawStatus {
   RawOverNonRaw = 'rawOverNonRaw',
 }
 
+export enum RejectedFilterStatus {
+  All = 'all',
+  RejectedOnly = 'rejectedOnly',
+  UnrejectedOnly = 'unrejectedOnly',
+}
+
+export const REJECTED_RATING = -1;
+
 export enum SortDirection {
   Ascending = 'asc',
   Descening = 'desc',
@@ -197,6 +206,7 @@ export enum LibraryViewMode {
 export interface FilterCriteria {
   colors: Array<string>;
   rating: number;
+  rejectedStatus: RejectedFilterStatus;
   rawStatus: RawStatus;
 }
 

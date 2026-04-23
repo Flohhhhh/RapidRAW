@@ -34,6 +34,8 @@ import {
   LibraryViewMode,
   Progress,
   RawStatus,
+  RejectedFilterStatus,
+  REJECTED_RATING,
   SortCriteria,
   SortDirection,
   SupportedTypes,
@@ -213,6 +215,14 @@ const rawStatusOptions: Array<KeyValueLabel> = [
   { key: RawStatus.NonRawOnly, label: 'Non-RAW Only' },
   { key: RawStatus.RawOverNonRaw, label: 'Prefer RAW' },
 ];
+
+const rejectedStatusOptions: Array<KeyValueLabel> = [
+  { key: RejectedFilterStatus.All, label: 'All Images' },
+  { key: RejectedFilterStatus.UnrejectedOnly, label: 'Unrejected Only' },
+  { key: RejectedFilterStatus.RejectedOnly, label: 'Rejected Only' },
+];
+
+const isRejectedRating = (rating: number) => rating === REJECTED_RATING;
 
 const thumbnailSizeOptions: Array<ThumbnailSizeOption> = [
   { id: ThumbnailSize.Small, label: 'Small', size: 160 },
@@ -763,6 +773,13 @@ function FilterOptions({ filterCriteria, setFilterCriteria }: FilterOptionProps)
     setFilterCriteria((prev: Partial<FilterCriteria>) => ({ ...prev, rating }));
   };
 
+  const handleRejectedStatusChange = (rejectedStatus: RejectedFilterStatus | undefined) => {
+    setFilterCriteria((prev: Partial<FilterCriteria>) => ({
+      ...prev,
+      rejectedStatus: rejectedStatus || RejectedFilterStatus.All,
+    }));
+  };
+
   const handleRawStatusChange = (rawStatus: RawStatus | undefined) => {
     setFilterCriteria((prev: Partial<FilterCriteria>) => ({ ...prev, rawStatus }));
   };
@@ -795,6 +812,34 @@ function FilterOptions({ filterCriteria, setFilterCriteria }: FilterOptionProps)
                     {option.label}
                   </Text>
                 </span>
+                {isSelected && <Check size={16} className={TEXT_COLOR_KEYS[TextColors.primary]} />}
+              </button>
+            );
+          })}
+        </div>
+
+        <div>
+          <Text as="div" variant={TextVariants.small} weight={TextWeights.semibold} className="px-3 py-2 uppercase">
+            Filter by Status
+          </Text>
+          {rejectedStatusOptions.map((option: KeyValueLabel) => {
+            const isSelected = (filterCriteria.rejectedStatus || RejectedFilterStatus.All) === option.key;
+            return (
+              <button
+                className={`w-full text-left px-3 py-2 rounded-md flex items-center justify-between transition-colors duration-150 ${
+                  isSelected ? 'bg-card-active' : 'hover:bg-bg-primary'
+                }`}
+                key={option.key}
+                onClick={() => handleRejectedStatusChange(option.key as RejectedFilterStatus)}
+                role="menuitem"
+              >
+                <Text
+                  variant={TextVariants.label}
+                  color={TextColors.primary}
+                  weight={isSelected ? TextWeights.semibold : TextWeights.normal}
+                >
+                  {option.label}
+                </Text>
                 {isSelected && <Check size={16} className={TEXT_COLOR_KEYS[TextColors.primary]} />}
               </button>
             );
@@ -946,6 +991,7 @@ function ViewOptionsDropdown({
 }: ViewOptionsProps) {
   const isFilterActive =
     filterCriteria.rating > 0 ||
+    (filterCriteria.rejectedStatus && filterCriteria.rejectedStatus !== RejectedFilterStatus.All) ||
     (filterCriteria.rawStatus && filterCriteria.rawStatus !== RawStatus.All) ||
     (filterCriteria.colors && filterCriteria.colors.length > 0);
 
@@ -1060,6 +1106,8 @@ function ListItem({
 
   const colorTag = tags?.find((t: string) => t.startsWith('color:'))?.substring(6);
   const colorLabel = COLOR_LABELS.find((c: Color) => c.name === colorTag);
+  const isRejected = isRejectedRating(rating);
+  const contentOpacityClass = isRejected ? 'opacity-60' : '';
 
   const dateObj = new Date(modified > 1e11 ? modified : modified * 1000);
   const dateStr =
@@ -1085,7 +1133,7 @@ function ListItem({
     >
       <div
         style={{ width: `${columnWidths.thumbnail}%` }}
-        className="flex items-center justify-center p-1.5 h-full overflow-hidden"
+        className={`flex items-center justify-center p-1.5 h-full overflow-hidden ${contentOpacityClass}`}
       >
         <div className="w-full h-full relative overflow-hidden rounded-sm bg-surface flex items-center justify-center">
           {layers.length > 0 && (
@@ -1128,7 +1176,10 @@ function ListItem({
       </div>
 
       {/* Name */}
-      <div style={{ width: `${columnWidths.name}%` }} className="flex items-center gap-2 px-3 h-full overflow-hidden">
+      <div
+        style={{ width: `${columnWidths.name}%` }}
+        className={`flex items-center gap-2 px-3 h-full overflow-hidden ${contentOpacityClass}`}
+      >
         <Text variant={TextVariants.small} className="truncate" weight={TextWeights.medium} color={TextColors.primary}>
           {baseName}
         </Text>
@@ -1146,14 +1197,25 @@ function ListItem({
         )}
       </div>
 
-      <div style={{ width: `${columnWidths.date}%` }} className="flex items-center px-3 h-full overflow-hidden">
+      <div
+        style={{ width: `${columnWidths.date}%` }}
+        className={`flex items-center px-3 h-full overflow-hidden ${contentOpacityClass}`}
+      >
         <Text variant={TextVariants.small} color={TextColors.secondary} className="truncate">
           {dateStr}
         </Text>
       </div>
 
       <div style={{ width: `${columnWidths.rating}%` }} className="flex items-center px-3 h-full overflow-hidden">
-        {rating > 0 && (
+        {isRejected && (
+          <div className="flex items-center gap-1 text-red-400">
+            <X size={12} />
+            <Text variant={TextVariants.small} color={TextColors.primary} weight={TextWeights.medium}>
+              Rejected
+            </Text>
+          </div>
+        )}
+        {!isRejected && rating > 0 && (
           <div className="flex items-center gap-1">
             <StarIcon size={12} className="text-accent fill-accent" />
             <Text variant={TextVariants.small} color={TextColors.primary} weight={TextWeights.medium}>
@@ -1163,7 +1225,10 @@ function ListItem({
         )}
       </div>
 
-      <div style={{ width: `${columnWidths.color}%` }} className="flex items-center px-3 h-full overflow-hidden">
+      <div
+        style={{ width: `${columnWidths.color}%` }}
+        className={`flex items-center px-3 h-full overflow-hidden ${contentOpacityClass}`}
+      >
         {colorLabel && (
           <div className="flex items-center gap-1.5">
             <div
@@ -1265,6 +1330,8 @@ function Thumbnail({
       : 'hover:ring-2 hover:ring-hover-color';
   const colorTag = tags?.find((t: string) => t.startsWith('color:'))?.substring(6);
   const colorLabel = COLOR_LABELS.find((c: Color) => c.name === colorTag);
+  const isRejected = isRejectedRating(rating);
+  const contentOpacityClass = isRejected ? 'opacity-60' : '';
 
   return (
     <div
@@ -1276,58 +1343,86 @@ function Thumbnail({
       onContextMenu={onContextMenu}
       onDoubleClick={() => onImageDoubleClick(path)}
     >
-      {layers.length > 0 && (
-        <div className="absolute inset-0 w-full h-full">
-          {layers.map((layer) => (
-            <div
-              key={layer.id}
-              className="absolute inset-0 w-full h-full"
-              style={{
-                opacity: layer.opacity,
-                transition: 'opacity 300ms ease-in-out',
-              }}
-              onTransitionEnd={() => handleTransitionEnd(layer.id)}
-            >
-              <img
-                alt={path.split(/[\\/]/).pop()}
-                className={`w-full h-full group-hover:scale-[1.02] transition-transform duration-300 ${
-                  thumbnailAspectRatio === ThumbnailAspectRatio.Contain ? 'object-contain' : 'object-cover'
-                } relative`}
-                decoding="async"
-                loading="lazy"
-                src={layer.url}
-              />
-            </div>
-          ))}
-        </div>
-      )}
-
-      <AnimatePresence>
-        {layers.length === 0 && showPlaceholder && (
-          <motion.div
-            className="absolute inset-0 w-full h-full flex items-center justify-center bg-surface"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-          >
-            <ImageIcon className="text-text-secondary animate-pulse" />
-          </motion.div>
+      <div className={`absolute inset-0 transition-opacity duration-150 ${contentOpacityClass}`}>
+        {layers.length > 0 && (
+          <div className="absolute inset-0 w-full h-full">
+            {layers.map((layer) => (
+              <div
+                key={layer.id}
+                className="absolute inset-0 w-full h-full"
+                style={{
+                  opacity: layer.opacity,
+                  transition: 'opacity 300ms ease-in-out',
+                }}
+                onTransitionEnd={() => handleTransitionEnd(layer.id)}
+              >
+                <img
+                  alt={path.split(/[\\/]/).pop()}
+                  className={`w-full h-full group-hover:scale-[1.02] transition-transform duration-300 ${
+                    thumbnailAspectRatio === ThumbnailAspectRatio.Contain ? 'object-contain' : 'object-cover'
+                  } relative`}
+                  decoding="async"
+                  loading="lazy"
+                  src={layer.url}
+                />
+              </div>
+            ))}
+          </div>
         )}
-      </AnimatePresence>
 
-      {(colorLabel || rating > 0) && (
+        <AnimatePresence>
+          {layers.length === 0 && showPlaceholder && (
+            <motion.div
+              className="absolute inset-0 w-full h-full flex items-center justify-center bg-surface"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+            >
+              <ImageIcon className="text-text-secondary animate-pulse" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/70 to-transparent p-2 flex items-end justify-between">
+          <Text variant={TextVariants.small} color={TextColors.white} className="truncate pr-2">
+            {baseName}
+          </Text>
+          {isVirtualCopy && (
+            <Text
+              as="div"
+              variant={TextVariants.small}
+              color={TextColors.white}
+              weight={TextWeights.bold}
+              className="shrink-0 shadow-md px-1.5 py-0.5 rounded-full backdrop-blur-xs"
+              data-tooltip="Virtual Copy"
+            >
+              VC
+            </Text>
+          )}
+        </div>
+      </div>
+
+      {(colorLabel || rating > 0 || isRejected) && (
         <>
           <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-linear-to-bl from-black/10 via-black/0 to-transparent pointer-events-none z-0" />
 
-          <div className="absolute top-1.5 right-1.5 rounded-full px-1.5 py-0.5 flex items-center gap-1 backdrop-blur-md shadow-md">
+          <div className="absolute top-1.5 right-1.5 rounded-full px-1.5 py-0.5 flex items-center gap-1 backdrop-blur-md shadow-md bg-black/55">
+            {isRejected && (
+              <>
+                <X size={12} className="text-red-300" />
+                <Text variant={TextVariants.small} color={TextColors.white}>
+                  Rejected
+                </Text>
+              </>
+            )}
             {colorLabel && (
               <div
                 className="w-3 h-3 rounded-full ring-1 ring-black/20"
                 style={{ backgroundColor: colorLabel.color }}
               ></div>
             )}
-            {rating > 0 && (
+            {!isRejected && rating > 0 && (
               <>
                 <Text variant={TextVariants.small} color={TextColors.white}>
                   {rating}
@@ -1338,23 +1433,6 @@ function Thumbnail({
           </div>
         </>
       )}
-      <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/70 to-transparent p-2 flex items-end justify-between">
-        <Text variant={TextVariants.small} color={TextColors.white} className="truncate pr-2">
-          {baseName}
-        </Text>
-        {isVirtualCopy && (
-          <Text
-            as="div"
-            variant={TextVariants.small}
-            color={TextColors.white}
-            weight={TextWeights.bold}
-            className="shrink-0 shadow-md px-1.5 py-0.5 rounded-full backdrop-blur-xs"
-            data-tooltip="Virtual Copy"
-          >
-            VC
-          </Text>
-        )}
-      </div>
     </div>
   );
 }

@@ -25,6 +25,7 @@ interface KeyboardShortcutsProps {
   handleRightPanelSelect(panel: Panel): void;
   handleRotate(degrees: number): void;
   handleSetColorLabel(label: string | null): void;
+  handleToggleRejected(): void;
   handleToggleFullScreen(): void;
   handleZoomChange(zoomValue: number, fitToWindow?: boolean): void;
   isFullScreen: boolean;
@@ -78,6 +79,7 @@ export const useKeyboardShortcuts = ({
   handleRightPanelSelect,
   handleRotate,
   handleSetColorLabel,
+  handleToggleRejected,
   handleToggleFullScreen,
   handleZoomChange,
   isFullScreen,
@@ -249,6 +251,12 @@ export const useKeyboardShortcuts = ({
           }
           return;
         }
+      }
+
+      if (key === 'x' && !isCtrl) {
+        event.preventDefault();
+        handleToggleRejected();
+        return;
       }
 
       if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(key)) {
@@ -477,6 +485,7 @@ export const useKeyboardShortcuts = ({
     handleRightPanelSelect,
     handleRotate,
     handleSetColorLabel,
+    handleToggleRejected,
     handleToggleFullScreen,
     handleZoomChange,
     isFullScreen,
