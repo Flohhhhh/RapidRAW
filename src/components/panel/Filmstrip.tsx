@@ -73,7 +73,7 @@ const FilmstripThumbnail = memo(
     const colorTag = tags?.find((t: string) => t.startsWith('color:'))?.substring(6);
     const colorLabel = COLOR_LABELS.find((c: Color) => c.name === colorTag);
     const isRejected = isRejectedRating(rating);
-    const contentOpacityClass = isRejected ? 'opacity-60' : '';
+    const contentOpacityClass = isRejected ? 'opacity-40' : '';
     const isVirtualCopy = path.includes('?vc=');
 
     const cleanPath = path.split('?')[0];
@@ -220,12 +220,9 @@ const FilmstripThumbnail = memo(
           <>
             <div className="absolute top-0 right-0 w-3/4 h-3/4 bg-linear-to-bl from-black/25 via-black/0 to-transparent pointer-events-none z-0" />
 
-            <div className="absolute top-1 right-1 bg-primary rounded-full px-1.5 py-0.5 text-xs text-white flex items-center gap-1 backdrop-blur-xs shadow-md z-10 pointer-events-none">
+            <div className="absolute top-1 right-1 bg-primary/70 rounded-full px-1.5 py-1 text-xs text-white flex items-center gap-1 backdrop-blur-xs shadow-md z-10 pointer-events-none">
               {isRejected && (
-                <>
-                  <X size={12} className="text-red-300" />
-                  <span>Rejected</span>
-                </>
+                <X size={14} className="text-white/90" />
               )}
               {colorLabel && (
                 <div

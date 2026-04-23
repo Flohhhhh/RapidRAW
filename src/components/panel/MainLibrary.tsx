@@ -1107,7 +1107,7 @@ function ListItem({
   const colorTag = tags?.find((t: string) => t.startsWith('color:'))?.substring(6);
   const colorLabel = COLOR_LABELS.find((c: Color) => c.name === colorTag);
   const isRejected = isRejectedRating(rating);
-  const contentOpacityClass = isRejected ? 'opacity-60' : '';
+  const contentOpacityClass = isRejected ? 'opacity-40' : '';
 
   const dateObj = new Date(modified > 1e11 ? modified : modified * 1000);
   const dateStr =
@@ -1208,11 +1208,8 @@ function ListItem({
 
       <div style={{ width: `${columnWidths.rating}%` }} className="flex items-center px-3 h-full overflow-hidden">
         {isRejected && (
-          <div className="flex items-center gap-1 text-red-400">
+          <div className="flex items-center text-text-secondary">
             <X size={12} />
-            <Text variant={TextVariants.small} color={TextColors.primary} weight={TextWeights.medium}>
-              Rejected
-            </Text>
           </div>
         )}
         {!isRejected && rating > 0 && (
@@ -1331,7 +1328,7 @@ function Thumbnail({
   const colorTag = tags?.find((t: string) => t.startsWith('color:'))?.substring(6);
   const colorLabel = COLOR_LABELS.find((c: Color) => c.name === colorTag);
   const isRejected = isRejectedRating(rating);
-  const contentOpacityClass = isRejected ? 'opacity-60' : '';
+  const contentOpacityClass = isRejected ? 'opacity-40' : '';
 
   return (
     <div
@@ -1407,14 +1404,9 @@ function Thumbnail({
         <>
           <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-linear-to-bl from-black/10 via-black/0 to-transparent pointer-events-none z-0" />
 
-          <div className="absolute top-1.5 right-1.5 rounded-full px-1.5 py-0.5 flex items-center gap-1 backdrop-blur-md shadow-md bg-black/55">
+          <div className="absolute top-1.5 right-1.5 rounded-full px-1.5 py-1 backdrop-blur-md shadow-md bg-black/45">
             {isRejected && (
-              <>
-                <X size={12} className="text-red-300" />
-                <Text variant={TextVariants.small} color={TextColors.white}>
-                  Rejected
-                </Text>
-              </>
+              <X size={14} className="text-white/90" />
             )}
             {colorLabel && (
               <div
