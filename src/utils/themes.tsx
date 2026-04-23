@@ -15,7 +15,7 @@ export const THEMES: Array<ThemeProps> = [
     cssVariables: {
       '--app-bg-primary': 'rgb(24, 24, 24)',
       '--app-bg-secondary': 'rgb(35, 35, 35)',
-      '--app-surface': 'rgb(30, 30, 30)',
+      '--app-surface': 'rgb(28, 28, 28)',
       '--app-card-active': 'rgb(43, 43, 43)',
       '--app-button-text': 'rgb(0, 0, 0)',
       '--app-text-primary': 'rgb(232, 234, 237)',
@@ -30,10 +30,10 @@ export const THEMES: Array<ThemeProps> = [
     name: 'Light',
     splashImage: '/splash-light.jpg',
     cssVariables: {
-      '--app-bg-primary': 'rgb(250, 250, 250)',
+      '--app-bg-primary': 'rgb(240, 240, 240)',
       '--app-bg-secondary': 'rgb(255, 255, 255)',
-      '--app-surface': 'rgb(240, 240, 240)',
-      '--app-card-active': 'rgb(250, 250, 250)',
+      '--app-surface': 'rgb(244, 244, 244)',
+      '--app-card-active': 'rgb(255, 255, 255)',
       '--app-button-text': 'rgb(255, 255, 255)',
       '--app-text-primary': 'rgb(20, 20, 20)',
       '--app-text-secondary': 'rgb(108, 108, 108)',
@@ -47,7 +47,7 @@ export const THEMES: Array<ThemeProps> = [
     name: 'Grey',
     splashImage: '/splash-grey.jpg',
     cssVariables: {
-      '--app-bg-primary': 'rgb(88, 88, 88)',
+      '--app-bg-primary': 'rgb(84, 84, 84)',
       '--app-bg-secondary': 'rgb(90, 90, 90)',
       '--app-surface': 'rgb(80, 80, 80)',
       '--app-card-active': 'rgb(105, 105, 105)',
