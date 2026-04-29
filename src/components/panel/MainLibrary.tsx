@@ -236,15 +236,15 @@ const selectByRatingOptions: Array<{
   showEmptyStar?: boolean;
   icon?: 'check' | 'x';
 }> = [
-  { label: 'Not Rejected', criteria: { type: 'rating', mode: 'notRejected' }, icon: 'check' },
-  { label: 'Rejected', criteria: { type: 'rating', mode: 'rejected' }, icon: 'x' },
-  { label: 'Unrated', criteria: { type: 'rating', mode: 'unrated' }, showEmptyStar: true },
-  { label: '1 star & up', criteria: { type: 'rating', mode: 'atLeast', value: 1 }, starValue: 1 },
-  { label: '2 star & up', criteria: { type: 'rating', mode: 'atLeast', value: 2 }, starValue: 2 },
-  { label: '3 star & up', criteria: { type: 'rating', mode: 'atLeast', value: 3 }, starValue: 3 },
-  { label: '4 star & up', criteria: { type: 'rating', mode: 'atLeast', value: 4 }, starValue: 4 },
-  { label: '5 star only', criteria: { type: 'rating', mode: 'atLeast', value: 5 }, starValue: 5 },
-];
+    { label: 'Not Rejected', criteria: { type: 'rating', mode: 'notRejected' }, icon: 'check' },
+    { label: 'Rejected', criteria: { type: 'rating', mode: 'rejected' }, icon: 'x' },
+    { label: 'Unrated', criteria: { type: 'rating', mode: 'unrated' }, showEmptyStar: true },
+    { label: '1 & up', criteria: { type: 'rating', mode: 'atLeast', value: 1 }, starValue: 1 },
+    { label: '2 & up', criteria: { type: 'rating', mode: 'atLeast', value: 2 }, starValue: 2 },
+    { label: '3 & up', criteria: { type: 'rating', mode: 'atLeast', value: 3 }, starValue: 3 },
+    { label: '4 & up', criteria: { type: 'rating', mode: 'atLeast', value: 4 }, starValue: 4 },
+    { label: '5 only', criteria: { type: 'rating', mode: 'atLeast', value: 5 }, starValue: 5 },
+  ];
 
 const isRejectedRating = (rating: number) => rating === REJECTED_RATING;
 
@@ -1140,21 +1140,32 @@ function SelectByDropdown({
         <Text as="div" variant={TextVariants.small} weight={TextWeights.semibold} className="px-3 py-2 mt-2 uppercase">
           Color Label
         </Text>
-        {COLOR_LABELS.map((label: Color) => (
-          <button
-            key={label.name}
-            className={`w-full text-left px-3 py-2 rounded-md flex items-center gap-3 transition-colors duration-150 ${(optionCounts.get(label.name) || 0) > 0 ? 'hover:bg-bg-primary' : 'opacity-50 cursor-not-allowed'
-              }`}
-            onClick={() => onSelectBy({ type: 'color', color: label.name })}
-            role="menuitem"
-            disabled={(optionCounts.get(label.name) || 0) === 0}
-          >
-            <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: label.color }}></div>
-            <Text variant={TextVariants.label} color={TextColors.primary}>
-              {label.name.charAt(0).toUpperCase() + label.name.slice(1)}
-            </Text>
-          </button>
-        ))}
+        <div className="flex flex-wrap gap-3 px-3 py-2">
+          {COLOR_LABELS.map((label: Color) => {
+            const isDisabled = (optionCounts.get(label.name) || 0) === 0;
+
+            return (
+              <button
+                key={label.name}
+                data-tooltip={label.name.charAt(0).toUpperCase() + label.name.slice(1)}
+                className={`w-6 h-6 rounded-full focus:outline-hidden focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-surface transition-transform ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'
+                  }`}
+                onClick={() => onSelectBy({ type: 'color', color: label.name })}
+                role="menuitem"
+                disabled={isDisabled}
+              >
+                <div className="relative w-full h-full">
+                  <div className="w-full h-full rounded-full" style={{ backgroundColor: label.color }}></div>
+                  {isDisabled && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-full">
+                      <X size={12} className={TEXT_COLOR_KEYS[TextColors.white]} />
+                    </div>
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </DropdownMenu>
   );
