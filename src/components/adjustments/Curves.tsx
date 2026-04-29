@@ -177,8 +177,9 @@ function getCurvePath(points: Array<Coord>) {
     const cp2x = p1.x - dx / 3.0;
     const cp2y = p1.y - (m1 * dx) / 3.0;
 
-    path += ` C ${cp1x.toFixed(2)} ${255 - Number(cp1y.toFixed(2))}, ${cp2x.toFixed(2)} ${255 - Number(cp2y.toFixed(2))
-      }, ${p1.x} ${255 - p1.y}`;
+    path += ` C ${cp1x.toFixed(2)} ${255 - Number(cp1y.toFixed(2))}, ${cp2x.toFixed(2)} ${
+      255 - Number(cp2y.toFixed(2))
+    }, ${p1.x} ${255 - p1.y}`;
   }
 
   if (points[n - 1].x < 255) {

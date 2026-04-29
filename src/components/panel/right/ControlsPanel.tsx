@@ -197,8 +197,9 @@ export default function Controls({
 
     const isPasteAllowed = copiedSectionAdjustments && copiedSectionAdjustments.section === sectionName;
     const pasteLabel = copiedSectionAdjustments
-      ? `Paste ${copiedSectionAdjustments.section.charAt(0).toUpperCase() + copiedSectionAdjustments.section.slice(1)
-      } Settings`
+      ? `Paste ${
+          copiedSectionAdjustments.section.charAt(0).toUpperCase() + copiedSectionAdjustments.section.slice(1)
+        } Settings`
       : 'Paste Settings';
 
     const options: Array<ControlsPanelOption> = [
@@ -267,7 +268,7 @@ export default function Controls({
                 waveformData={waveform || null}
                 histogram={histogram}
                 displayMode={activeWaveformChannel || 'luma'}
-                setDisplayMode={setActiveWaveformChannel || (() => { })}
+                setDisplayMode={setActiveWaveformChannel || (() => {})}
                 showClipping={adjustments.showClipping || false}
                 onToggleClipping={() => {
                   setAdjustments((prev: Adjustments) => ({

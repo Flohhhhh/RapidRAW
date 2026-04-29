@@ -22,7 +22,7 @@ export default function CollapsibleSection({
   isOpen,
   onContextMenu,
   onToggle,
-  onToggleVisibility = () => { },
+  onToggleVisibility = () => {},
   title,
 }: CollapsibleSectionProps) {
   const [isHovering, setIsHovering] = useState(false);

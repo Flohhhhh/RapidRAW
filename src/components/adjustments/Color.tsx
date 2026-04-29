@@ -87,8 +87,9 @@ const ColorSwatch = ({ color, name, isActive, onClick }: ColorSwatchProps) => {
       onTouchEnd={handleMouseUp}
     >
       <div
-        className={`absolute inset-0 rounded-full border-2 transition-all duration-200 ease-out ${isActive ? 'border-white opacity-100' : 'scale-100 border-transparent opacity-0'
-          }`}
+        className={`absolute inset-0 rounded-full border-2 transition-all duration-200 ease-out ${
+          isActive ? 'border-white opacity-100' : 'scale-100 border-transparent opacity-0'
+        }`}
         style={{
           transform: isActive ? (isPressed ? 'scale(1.1)' : 'scale(1.25)') : undefined,
           transition: isPressed
@@ -98,8 +99,9 @@ const ColorSwatch = ({ color, name, isActive, onClick }: ColorSwatchProps) => {
       />
 
       <div
-        className={`absolute inset-0 rounded-full transition-all duration-150 ease-out ${isActive ? 'shadow-lg' : 'shadow-md'
-          }`}
+        className={`absolute inset-0 rounded-full transition-all duration-150 ease-out ${
+          isActive ? 'shadow-lg' : 'shadow-md'
+        }`}
         style={{
           backgroundColor: color,
           transform: getTransform(),
@@ -164,9 +166,10 @@ const ColorGradingPanel = ({ adjustments, setAdjustments, onDragStateChange }: C
               key={tab.id}
               onClick={() => setActiveTab(tab.id as '3way' | 'global')}
               className={`w-7 h-7 rounded-full flex items-center justify-center transition-all focus:outline-none
-                ${isActive
-                  ? 'ring-2 ring-offset-2 ring-offset-surface ring-accent text-text-primary'
-                  : 'bg-bg-secondary text-text-secondary hover:text-text-primary hover:bg-bg-secondary/80'
+                ${
+                  isActive
+                    ? 'ring-2 ring-offset-2 ring-offset-surface ring-accent text-text-primary'
+                    : 'bg-bg-secondary text-text-secondary hover:text-text-primary hover:bg-bg-secondary/80'
                 }`}
             >
               {tab.icon}
@@ -179,9 +182,10 @@ const ColorGradingPanel = ({ adjustments, setAdjustments, onDragStateChange }: C
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           className={`w-7 h-7 rounded-full flex items-center justify-center transition-all focus:outline-none
-            ${isExpanded
-              ? 'bg-accent text-button-text'
-              : 'bg-bg-secondary text-text-secondary hover:text-text-primary hover:bg-bg-secondary/80'
+            ${
+              isExpanded
+                ? 'bg-accent text-button-text'
+                : 'bg-bg-secondary text-text-secondary hover:text-text-primary hover:bg-bg-secondary/80'
             }`}
           data-tooltip="Toggle Sliders"
         >
