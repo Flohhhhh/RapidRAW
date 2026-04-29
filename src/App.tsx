@@ -44,7 +44,7 @@ import {
 } from 'lucide-react';
 import TitleBar from './window/TitleBar';
 import CommunityPage from './components/panel/CommunityPage';
-import MainLibrary, { ColumnWidths } from './components/panel/MainLibrary';
+import MainLibrary, { ColumnWidths, SelectByCriteria } from './components/panel/MainLibrary';
 import FolderTree from './components/panel/FolderTree';
 import Editor from './components/panel/Editor';
 import Controls from './components/panel/right/ControlsPanel';
@@ -4195,6 +4195,57 @@ function App() {
     }
   };
 
+  const handleSelectBy = useCallback(
+    (criteria: SelectByCriteria) => {
+      const matchingPaths = sortedImageList
+        .filter((image: ImageFile) => {
+          if (criteria.type === 'rating') {
+            const rating = imageRatings[image.path] ?? 0;
+
+            if (criteria.mode === 'rejected') {
+              return rating === REJECTED_RATING;
+            }
+
+            if (criteria.mode === 'unrejected') {
+              return rating !== REJECTED_RATING;
+            }
+
+            if (criteria.mode === 'unrated') {
+              return rating === 0;
+            }
+
+            const threshold = criteria.value ?? 0;
+            if (rating === REJECTED_RATING) {
+              return false;
+            }
+            return threshold === 5 ? rating === 5 : rating >= threshold;
+          }
+
+          const imageColor = (image.tags || []).find((tag: string) => tag.startsWith('color:'))?.substring(6);
+          return imageColor === criteria.color;
+        })
+        .map((image: ImageFile) => image.path);
+
+      setMultiSelectedPaths(matchingPaths);
+
+      if (selectedImage) {
+        if (matchingPaths.length > 0) {
+          handleImageSelect(matchingPaths[0]);
+          setSelectionAnchorPath(matchingPaths[0]);
+        } else {
+          handleBackToLibrary();
+          setSelectionAnchorPath(null);
+        }
+        return;
+      }
+
+      const nextActivePath = matchingPaths[0] ?? null;
+      setLibraryActivePath(nextActivePath);
+      setSelectionAnchorPath(nextActivePath);
+    },
+    [sortedImageList, imageRatings, selectedImage, handleImageSelect, handleBackToLibrary],
+  );
+
   const handleRenameFiles = useCallback(async (paths: Array<string>) => {
     if (paths && paths.length > 0) {
       setRenameTargetPaths(paths);
@@ -5245,6 +5296,7 @@ function App() {
             onImportClick={() => handleImportClick(currentFolderPath as string)}
             onLibraryRefresh={handleLibraryRefresh}
             onOpenFolder={handleOpenFolder}
+            onSelectBy={handleSelectBy}
             onSettingsChange={handleSettingsChange}
             onThumbnailAspectRatioChange={setThumbnailAspectRatio}
             onThumbnailSizeChange={setThumbnailSize}

@@ -73,7 +73,7 @@ const FilmstripThumbnail = memo(
     const colorTag = tags?.find((t: string) => t.startsWith('color:'))?.substring(6);
     const colorLabel = COLOR_LABELS.find((c: Color) => c.name === colorTag);
     const isRejected = isRejectedRating(rating);
-    const contentOpacityClass = isRejected ? 'opacity-40' : '';
+    const contentOpacityClass = isRejected ? 'opacity-35' : '';
     const isVirtualCopy = path.includes('?vc=');
 
     const cleanPath = path.split('?')[0];

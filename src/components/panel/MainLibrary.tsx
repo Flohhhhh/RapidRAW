@@ -16,6 +16,7 @@ import {
   RefreshCw,
   Settings,
   SlidersHorizontal,
+  SquareDashedMousePointer,
   Star as StarIcon,
   Search,
   Users,
@@ -54,6 +55,10 @@ export interface ColumnWidths {
   rating: number;
   color: number;
 }
+
+export type SelectByCriteria =
+  | { type: 'rating'; mode: 'unrejected' | 'rejected' | 'unrated' | 'atLeast'; value?: number }
+  | { type: 'color'; color: string };
 
 interface DropdownMenuProps {
   buttonContent: any;
@@ -106,6 +111,7 @@ interface MainLibraryProps {
   onImportClick(): void;
   onLibraryRefresh(): void;
   onOpenFolder(): void;
+  onSelectBy(criteria: SelectByCriteria): void;
   onSettingsChange(settings: AppSettings): Promise<void>;
   onThumbnailAspectRatioChange(aspectRatio: ThumbnailAspectRatio): void;
   onThumbnailSizeChange(size: ThumbnailSize): void;
@@ -223,7 +229,50 @@ const rejectedStatusOptions: Array<KeyValueLabel> = [
   { key: RejectedFilterStatus.RejectedOnly, label: 'Rejected Only' },
 ];
 
+const selectByRatingOptions: Array<{ label: string; criteria: SelectByCriteria; starValue?: number }> = [
+  { label: 'Unrejected', criteria: { type: 'rating', mode: 'unrejected' } },
+  { label: 'Rejected', criteria: { type: 'rating', mode: 'rejected' } },
+  { label: 'Unrated', criteria: { type: 'rating', mode: 'unrated' } },
+  { label: '1 star & up', criteria: { type: 'rating', mode: 'atLeast', value: 1 }, starValue: 1 },
+  { label: '2 star & up', criteria: { type: 'rating', mode: 'atLeast', value: 2 }, starValue: 2 },
+  { label: '3 star & up', criteria: { type: 'rating', mode: 'atLeast', value: 3 }, starValue: 3 },
+  { label: '4 star & up', criteria: { type: 'rating', mode: 'atLeast', value: 4 }, starValue: 4 },
+  { label: '5 star only', criteria: { type: 'rating', mode: 'atLeast', value: 5 }, starValue: 5 },
+];
+
 const isRejectedRating = (rating: number) => rating === REJECTED_RATING;
+
+const matchesSelectByCriteria = (
+  image: ImageFile,
+  criteria: SelectByCriteria,
+  imageRatings: Record<string, number>,
+): boolean => {
+  if (criteria.type === 'rating') {
+    const rating = imageRatings[image.path] ?? 0;
+
+    if (criteria.mode === 'rejected') {
+      return rating === REJECTED_RATING;
+    }
+
+    if (criteria.mode === 'unrejected') {
+      return rating !== REJECTED_RATING;
+    }
+
+    if (criteria.mode === 'unrated') {
+      return rating === 0;
+    }
+
+    const threshold = criteria.value ?? 0;
+    if (rating === REJECTED_RATING) {
+      return false;
+    }
+
+    return threshold === 5 ? rating === 5 : rating >= threshold;
+  }
+
+  const imageColor = (image.tags || []).find((tag: string) => tag.startsWith('color:'))?.substring(6);
+  return imageColor === criteria.color;
+};
 
 const thumbnailSizeOptions: Array<ThumbnailSizeOption> = [
   { id: ThumbnailSize.Small, label: 'Small', size: 160 },
@@ -334,9 +383,8 @@ function ListHeader({
     return (
       <div
         style={{ width: `${widths[widthKey]}%` }}
-        className={`relative flex items-center px-3 h-full select-none ${
-          sortKey ? 'cursor-pointer hover:bg-bg-primary/50 transition-colors' : ''
-        }`}
+        className={`relative flex items-center px-3 h-full select-none ${sortKey ? 'cursor-pointer hover:bg-bg-primary/50 transition-colors' : ''
+          }`}
         onClick={() => sortKey && onSortChange(sortKey)}
       >
         <Text
@@ -715,9 +763,8 @@ function ThumbnailSizeOptions({ selectedSize, onSelectSize }: ThumbnailSizeProps
         const isSelected = selectedSize === option.id;
         return (
           <button
-            className={`w-full text-left px-3 py-2 rounded-md flex items-center justify-between transition-colors duration-150 ${
-              isSelected ? 'bg-card-active' : 'hover:bg-bg-primary'
-            }`}
+            className={`w-full text-left px-3 py-2 rounded-md flex items-center justify-between transition-colors duration-150 ${isSelected ? 'bg-card-active' : 'hover:bg-bg-primary'
+              }`}
             key={option.id}
             onClick={() => onSelectSize(option.id)}
             role="menuitem"
@@ -747,9 +794,8 @@ function ThumbnailAspectRatioOptions({ selectedAspectRatio, onSelectAspectRatio 
         const isSelected = selectedAspectRatio === option.id;
         return (
           <button
-            className={`w-full text-left px-3 py-2 rounded-md flex items-center justify-between transition-colors duration-150 ${
-              isSelected ? 'bg-card-active' : 'hover:bg-bg-primary'
-            }`}
+            className={`w-full text-left px-3 py-2 rounded-md flex items-center justify-between transition-colors duration-150 ${isSelected ? 'bg-card-active' : 'hover:bg-bg-primary'
+              }`}
             key={option.id}
             onClick={() => onSelectAspectRatio(option.id)}
             role="menuitem"
@@ -796,9 +842,8 @@ function FilterOptions({ filterCriteria, setFilterCriteria }: FilterOptionProps)
             const isSelected = filterCriteria.rating === option.value;
             return (
               <button
-                className={`w-full text-left px-3 py-2 rounded-md flex items-center justify-between transition-colors duration-150 ${
-                  isSelected ? 'bg-card-active' : 'hover:bg-bg-primary'
-                }`}
+                className={`w-full text-left px-3 py-2 rounded-md flex items-center justify-between transition-colors duration-150 ${isSelected ? 'bg-card-active' : 'hover:bg-bg-primary'
+                  }`}
                 key={option.value}
                 onClick={() => handleRatingFilterChange(option.value)}
                 role="menuitem"
@@ -827,9 +872,8 @@ function FilterOptions({ filterCriteria, setFilterCriteria }: FilterOptionProps)
             const isSelected = (filterCriteria.rejectedStatus || RejectedFilterStatus.All) === option.key;
             return (
               <button
-                className={`w-full text-left px-3 py-2 rounded-md flex items-center justify-between transition-colors duration-150 ${
-                  isSelected ? 'bg-card-active' : 'hover:bg-bg-primary'
-                }`}
+                className={`w-full text-left px-3 py-2 rounded-md flex items-center justify-between transition-colors duration-150 ${isSelected ? 'bg-card-active' : 'hover:bg-bg-primary'
+                  }`}
                 key={option.key}
                 onClick={() => handleRejectedStatusChange(option.key as RejectedFilterStatus)}
                 role="menuitem"
@@ -855,9 +899,8 @@ function FilterOptions({ filterCriteria, setFilterCriteria }: FilterOptionProps)
             const isSelected = (filterCriteria.rawStatus || RawStatus.All) === option.key;
             return (
               <button
-                className={`w-full text-left px-3 py-2 rounded-md flex items-center justify-between transition-colors duration-150 ${
-                  isSelected ? 'bg-card-active' : 'hover:bg-bg-primary'
-                }`}
+                className={`w-full text-left px-3 py-2 rounded-md flex items-center justify-between transition-colors duration-150 ${isSelected ? 'bg-card-active' : 'hover:bg-bg-primary'
+                  }`}
                 key={option.key}
                 onClick={() => handleRawStatusChange(option.key as RawStatus)}
                 role="menuitem"
@@ -911,9 +954,8 @@ function SortOptions({ sortCriteria, setSortCriteria, sortOptions }: SortOptions
         const isSelected = sortCriteria.key === option.key;
         return (
           <button
-            className={`w-full text-left px-3 py-2 rounded-md flex items-center justify-between transition-colors duration-150 ${
-              isSelected ? 'bg-card-active' : 'hover:bg-bg-primary'
-            } ${option.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`w-full text-left px-3 py-2 rounded-md flex items-center justify-between transition-colors duration-150 ${isSelected ? 'bg-card-active' : 'hover:bg-bg-primary'
+              } ${option.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
             key={option.key}
             onClick={() => !option.disabled && handleKeyChange(option.key)}
             role="menuitem"
@@ -942,9 +984,8 @@ function ViewModeOptions({ mode, setMode }: { mode: LibraryViewMode; setMode: (m
         Display Mode
       </Text>
       <button
-        className={`w-full text-left px-3 py-2 rounded-md flex items-center justify-between transition-colors duration-150 ${
-          mode === LibraryViewMode.Flat ? 'bg-card-active' : 'hover:bg-bg-primary'
-        }`}
+        className={`w-full text-left px-3 py-2 rounded-md flex items-center justify-between transition-colors duration-150 ${mode === LibraryViewMode.Flat ? 'bg-card-active' : 'hover:bg-bg-primary'
+          }`}
         onClick={() => setMode(LibraryViewMode.Flat)}
         role="menuitem"
       >
@@ -958,9 +999,8 @@ function ViewModeOptions({ mode, setMode }: { mode: LibraryViewMode; setMode: (m
         {mode === LibraryViewMode.Flat && <Check size={16} className={TEXT_COLOR_KEYS[TextColors.primary]} />}
       </button>
       <button
-        className={`w-full text-left px-3 py-2 rounded-md flex items-center justify-between transition-colors duration-150 ${
-          mode === LibraryViewMode.Recursive ? 'bg-card-active' : 'hover:bg-bg-primary'
-        }`}
+        className={`w-full text-left px-3 py-2 rounded-md flex items-center justify-between transition-colors duration-150 ${mode === LibraryViewMode.Recursive ? 'bg-card-active' : 'hover:bg-bg-primary'
+          }`}
         onClick={() => setMode(LibraryViewMode.Recursive)}
         role="menuitem"
       >
@@ -1026,6 +1066,86 @@ function ViewOptionsDropdown({
         <div className="w-1/4 p-2">
           <SortOptions sortCriteria={sortCriteria} setSortCriteria={setSortCriteria} sortOptions={sortOptions} />
         </div>
+      </div>
+    </DropdownMenu>
+  );
+}
+
+function SelectByDropdown({
+  imageList,
+  imageRatings,
+  onSelectBy,
+}: {
+  imageList: ImageFile[];
+  imageRatings: Record<string, number>;
+  onSelectBy: (criteria: SelectByCriteria) => void;
+}) {
+  const optionCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+
+    for (const option of selectByRatingOptions) {
+      counts.set(
+        option.label,
+        imageList.filter((image) => matchesSelectByCriteria(image, option.criteria, imageRatings)).length,
+      );
+    }
+
+    for (const label of COLOR_LABELS) {
+      counts.set(
+        label.name,
+        imageList.filter((image) => matchesSelectByCriteria(image, { type: 'color', color: label.name }, imageRatings)).length,
+      );
+    }
+
+    return counts;
+  }, [imageList, imageRatings]);
+
+  return (
+    <DropdownMenu
+      buttonContent={<SquareDashedMousePointer className="w-8 h-8" />}
+      buttonTitle="Select By..."
+      contentClassName="w-72"
+    >
+      <div className="p-2">
+        <Text as="div" variant={TextVariants.small} weight={TextWeights.semibold} className="px-3 py-2 uppercase">
+          Rating
+        </Text>
+        {selectByRatingOptions.map((option) => (
+          <button
+            key={option.label}
+            className={`w-full text-left px-3 py-2 rounded-md flex items-center gap-2 transition-colors duration-150 ${(optionCounts.get(option.label) || 0) > 0
+              ? 'hover:bg-bg-primary'
+              : 'opacity-50 cursor-not-allowed'
+              }`}
+            onClick={() => onSelectBy(option.criteria)}
+            role="menuitem"
+            disabled={(optionCounts.get(option.label) || 0) === 0}
+          >
+            {option.starValue ? <StarIcon size={16} className="text-accent fill-accent shrink-0" /> : null}
+            <Text variant={TextVariants.label} color={TextColors.primary}>
+              {option.label}
+            </Text>
+          </button>
+        ))}
+
+        <Text as="div" variant={TextVariants.small} weight={TextWeights.semibold} className="px-3 py-2 mt-2 uppercase">
+          Color Label
+        </Text>
+        {COLOR_LABELS.map((label: Color) => (
+          <button
+            key={label.name}
+            className={`w-full text-left px-3 py-2 rounded-md flex items-center gap-3 transition-colors duration-150 ${(optionCounts.get(label.name) || 0) > 0 ? 'hover:bg-bg-primary' : 'opacity-50 cursor-not-allowed'
+              }`}
+            onClick={() => onSelectBy({ type: 'color', color: label.name })}
+            role="menuitem"
+            disabled={(optionCounts.get(label.name) || 0) === 0}
+          >
+            <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: label.color }}></div>
+            <Text variant={TextVariants.label} color={TextColors.primary}>
+              {label.name.charAt(0).toUpperCase() + label.name.slice(1)}
+            </Text>
+          </button>
+        ))}
       </div>
     </DropdownMenu>
   );
@@ -1108,7 +1228,7 @@ function ListItem({
   const colorTag = tags?.find((t: string) => t.startsWith('color:'))?.substring(6);
   const colorLabel = COLOR_LABELS.find((c: Color) => c.name === colorTag);
   const isRejected = isRejectedRating(rating);
-  const contentOpacityClass = isRejected ? 'opacity-40' : '';
+  const contentOpacityClass = isRejected ? 'opacity-35' : '';
 
   const dateObj = new Date(modified > 1e11 ? modified : modified * 1000);
   const dateStr =
@@ -1148,9 +1268,8 @@ function ListItem({
                 >
                   <img
                     alt={baseName}
-                    className={`w-full h-full relative ${
-                      thumbnailAspectRatio === ThumbnailAspectRatio.Contain ? 'object-contain' : 'object-cover'
-                    }`}
+                    className={`w-full h-full relative ${thumbnailAspectRatio === ThumbnailAspectRatio.Contain ? 'object-contain' : 'object-cover'
+                      }`}
                     decoding="async"
                     loading="lazy"
                     src={layer.url}
@@ -1329,7 +1448,7 @@ function Thumbnail({
   const colorTag = tags?.find((t: string) => t.startsWith('color:'))?.substring(6);
   const colorLabel = COLOR_LABELS.find((c: Color) => c.name === colorTag);
   const isRejected = isRejectedRating(rating);
-  const contentOpacityClass = isRejected ? 'opacity-40' : '';
+  const contentOpacityClass = isRejected ? 'opacity-35' : '';
 
   return (
     <div
@@ -1356,9 +1475,8 @@ function Thumbnail({
               >
                 <img
                   alt={path.split(/[\\/]/).pop()}
-                  className={`w-full h-full group-hover:scale-[1.02] transition-transform duration-300 ${
-                    thumbnailAspectRatio === ThumbnailAspectRatio.Contain ? 'object-contain' : 'object-cover'
-                  } relative`}
+                  className={`w-full h-full group-hover:scale-[1.02] transition-transform duration-300 ${thumbnailAspectRatio === ThumbnailAspectRatio.Contain ? 'object-contain' : 'object-cover'
+                    } relative`}
                   decoding="async"
                   loading="lazy"
                   src={layer.url}
@@ -1579,6 +1697,7 @@ export default function MainLibrary({
   onImportClick,
   onLibraryRefresh,
   onOpenFolder,
+  onSelectBy,
   onSettingsChange,
   onThumbnailAspectRatioChange,
   onThumbnailSizeChange,
@@ -2001,8 +2120,7 @@ export default function MainLibrary({
                       Continue where you left off or start a new session.
                     </>
                   ) : (
-                    `A blazingly fast, GPU-accelerated RAW image editor. ${
-                      isAndroid ? 'Open the library to begin.' : 'Open a folder to begin.'
+                    `A blazingly fast, GPU-accelerated RAW image editor. ${isAndroid ? 'Open the library to begin.' : 'Open a folder to begin.'
                     }`
                   )}
                 </Text>
@@ -2018,9 +2136,8 @@ export default function MainLibrary({
                   )}
                   <div className="flex items-center gap-2">
                     <Button
-                      className={`rounded-md grow flex justify-center items-center h-11 ${
-                        hasLastPath ? 'bg-surface text-text-primary shadow-none' : ''
-                      }`}
+                      className={`rounded-md grow flex justify-center items-center h-11 ${hasLastPath ? 'bg-surface text-text-primary shadow-none' : ''
+                        }`}
                       onClick={onOpenFolder}
                       size="lg"
                     >
@@ -2055,9 +2172,8 @@ export default function MainLibrary({
                   <div className="flex items-center space-x-2">
                     <p>
                       <span
-                        className={`group transition-all duration-300 ease-in-out rounded-md py-1 ${
-                          isUpdateAvailable ? 'cursor-pointer border border-yellow-500 px-2 hover:bg-yellow-500/20' : ''
-                        }`}
+                        className={`group transition-all duration-300 ease-in-out rounded-md py-1 ${isUpdateAvailable ? 'cursor-pointer border border-yellow-500 px-2 hover:bg-yellow-500/20' : ''
+                          }`}
                         onClick={() => {
                           if (isUpdateAvailable) {
                             open('https://github.com/CyberTimon/RapidRAW/releases/latest');
@@ -2124,17 +2240,15 @@ export default function MainLibrary({
               <p className="text-sm invisible select-none pointer-events-none h-5 overflow-hidden"></p>
             )}
             <div
-              className={`flex items-center gap-2 overflow-hidden transition-all duration-300 whitespace-nowrap ${
-                isBusyDelayed ? 'max-w-xs opacity-100' : 'max-w-0 opacity-0'
-              }`}
+              className={`flex items-center gap-2 overflow-hidden transition-all duration-300 whitespace-nowrap ${isBusyDelayed ? 'max-w-xs opacity-100' : 'max-w-0 opacity-0'
+                }`}
             >
               <Loader2 size={14} className="animate-spin text-text-secondary shrink-0" />
               <div
-                className={`flex items-center transition-all duration-300 ease-out overflow-hidden ${
-                  isProgressHovered && isBusyDelayed && (thumbnailProgress?.total ?? 0) > 0
-                    ? 'max-w-xs opacity-100'
-                    : 'max-w-0 opacity-0'
-                }`}
+                className={`flex items-center transition-all duration-300 ease-out overflow-hidden ${isProgressHovered && isBusyDelayed && (thumbnailProgress?.total ?? 0) > 0
+                  ? 'max-w-xs opacity-100'
+                  : 'max-w-0 opacity-0'
+                  }`}
               >
                 <Text variant={TextVariants.small} color={TextColors.secondary} className="whitespace-nowrap">
                   ({thumbnailProgress?.current ?? 0}/{thumbnailProgress?.total ?? 0})
@@ -2183,6 +2297,7 @@ export default function MainLibrary({
             thumbnailSize={thumbnailSize}
             thumbnailAspectRatio={thumbnailAspectRatio}
           />
+          <SelectByDropdown imageList={imageList} imageRatings={imageRatings} onSelectBy={onSelectBy} />
           <Button
             className="h-12 w-12 bg-surface text-text-primary shadow-none p-0 flex items-center justify-center"
             onClick={onNavigateToCommunity}
@@ -2344,8 +2459,8 @@ export default function MainLibrary({
               : isIndexing && indexingProgress.total > 0
                 ? `Indexing images... (${indexingProgress.current}/${indexingProgress.total})`
                 : importState.status === Status.Importing &&
-                    importState?.progress?.total &&
-                    importState.progress.total > 0
+                  importState?.progress?.total &&
+                  importState.progress.total > 0
                   ? `Importing images... (${importState.progress?.current}/${importState.progress?.total})`
                   : 'Processing images...'}
           </Text>
