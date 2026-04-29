@@ -4206,7 +4206,7 @@ function App() {
               return rating === REJECTED_RATING;
             }
 
-            if (criteria.mode === 'unrejected') {
+            if (criteria.mode === 'notRejected') {
               return rating !== REJECTED_RATING;
             }
 

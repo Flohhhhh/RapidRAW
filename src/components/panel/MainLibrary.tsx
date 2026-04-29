@@ -57,7 +57,7 @@ export interface ColumnWidths {
 }
 
 export type SelectByCriteria =
-  | { type: 'rating'; mode: 'unrejected' | 'rejected' | 'unrated' | 'atLeast'; value?: number }
+  | { type: 'rating'; mode: 'notRejected' | 'rejected' | 'unrated' | 'atLeast'; value?: number }
   | { type: 'color'; color: string };
 
 interface DropdownMenuProps {
@@ -225,7 +225,7 @@ const rawStatusOptions: Array<KeyValueLabel> = [
 
 const rejectedStatusOptions: Array<KeyValueLabel> = [
   { key: RejectedFilterStatus.All, label: 'All Images' },
-  { key: RejectedFilterStatus.UnrejectedOnly, label: 'Unrejected Only' },
+  { key: RejectedFilterStatus.UnrejectedOnly, label: 'Not Rejected Only' },
   { key: RejectedFilterStatus.RejectedOnly, label: 'Rejected Only' },
 ];
 
@@ -236,7 +236,7 @@ const selectByRatingOptions: Array<{
   showEmptyStar?: boolean;
   icon?: 'check' | 'x';
 }> = [
-  { label: 'Unrejected', criteria: { type: 'rating', mode: 'unrejected' }, icon: 'check' },
+  { label: 'Not Rejected', criteria: { type: 'rating', mode: 'notRejected' }, icon: 'check' },
   { label: 'Rejected', criteria: { type: 'rating', mode: 'rejected' }, icon: 'x' },
   { label: 'Unrated', criteria: { type: 'rating', mode: 'unrated' }, showEmptyStar: true },
   { label: '1 star & up', criteria: { type: 'rating', mode: 'atLeast', value: 1 }, starValue: 1 },
@@ -260,7 +260,7 @@ const matchesSelectByCriteria = (
       return rating === REJECTED_RATING;
     }
 
-    if (criteria.mode === 'unrejected') {
+    if (criteria.mode === 'notRejected') {
       return rating !== REJECTED_RATING;
     }
 
