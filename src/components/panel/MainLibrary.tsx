@@ -229,10 +229,16 @@ const rejectedStatusOptions: Array<KeyValueLabel> = [
   { key: RejectedFilterStatus.RejectedOnly, label: 'Rejected Only' },
 ];
 
-const selectByRatingOptions: Array<{ label: string; criteria: SelectByCriteria; starValue?: number }> = [
-  { label: 'Unrejected', criteria: { type: 'rating', mode: 'unrejected' } },
-  { label: 'Rejected', criteria: { type: 'rating', mode: 'rejected' } },
-  { label: 'Unrated', criteria: { type: 'rating', mode: 'unrated' } },
+const selectByRatingOptions: Array<{
+  label: string;
+  criteria: SelectByCriteria;
+  starValue?: number;
+  showEmptyStar?: boolean;
+  icon?: 'check' | 'x';
+}> = [
+  { label: 'Unrejected', criteria: { type: 'rating', mode: 'unrejected' }, icon: 'check' },
+  { label: 'Rejected', criteria: { type: 'rating', mode: 'rejected' }, icon: 'x' },
+  { label: 'Unrated', criteria: { type: 'rating', mode: 'unrated' }, showEmptyStar: true },
   { label: '1 star & up', criteria: { type: 'rating', mode: 'atLeast', value: 1 }, starValue: 1 },
   { label: '2 star & up', criteria: { type: 'rating', mode: 'atLeast', value: 2 }, starValue: 2 },
   { label: '3 star & up', criteria: { type: 'rating', mode: 'atLeast', value: 3 }, starValue: 3 },
@@ -1121,7 +1127,10 @@ function SelectByDropdown({
             role="menuitem"
             disabled={(optionCounts.get(option.label) || 0) === 0}
           >
+            {option.icon === 'check' ? <Check size={16} className="text-accent shrink-0" /> : null}
+            {option.icon === 'x' ? <X size={16} className="text-accent shrink-0" /> : null}
             {option.starValue ? <StarIcon size={16} className="text-accent fill-accent shrink-0" /> : null}
+            {option.showEmptyStar ? <StarIcon size={16} className="text-accent shrink-0" /> : null}
             <Text variant={TextVariants.label} color={TextColors.primary}>
               {option.label}
             </Text>
