@@ -190,6 +190,9 @@ export interface AppSettings {
   waveformHeight?: number;
   activeWaveformChannel?: string;
   useWgpuRenderer?: boolean;
+  canvasInputMode?: 'mouse' | 'trackpad';
+  zoomSpeedMultiplier?: number;
+  keybinds?: { [action: string]: string[] };
 }
 
 export interface BrushSettings {
@@ -340,4 +343,9 @@ export interface CullingSuggestions {
   similarGroups: CullGroup[];
   blurryImages: ImageAnalysisResult[];
   failedPaths: string[];
+}
+
+export interface KeybindHandler {
+  shouldFire?: () => boolean;
+  execute: (event: KeyboardEvent) => void;
 }
