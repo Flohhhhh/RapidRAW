@@ -2898,8 +2898,8 @@ function App() {
         return;
       }
 
-      const currentRating = imageRatings[pathsToRate[0]] || 0;
-      const finalRating = currentRating === REJECTED_RATING ? 0 : REJECTED_RATING;
+      const allRejected = pathsToRate.every((path: string) => (imageRatings[path] ?? 0) === REJECTED_RATING);
+      const finalRating = allRejected ? 0 : REJECTED_RATING;
 
       applyRatingToPaths(pathsToRate, finalRating);
     },
