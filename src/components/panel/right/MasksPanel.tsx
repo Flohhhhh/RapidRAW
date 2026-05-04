@@ -1256,11 +1256,7 @@ export default function MasksPanel({
       onDragEnd={handleDragEnd}
       collisionDetection={pointerWithin}
     >
-      <div
-        className="flex flex-col h-full select-none overflow-hidden"
-        onClick={handleDeselect}
-        onContextMenu={handlePanelContextMenu}
-      >
+      <div className="flex flex-col h-full select-none overflow-hidden" onContextMenu={handlePanelContextMenu}>
         <div className="p-4 flex justify-between items-center shrink-0 border-b border-surface">
           <Text variant={TextVariants.title}>Masking</Text>
           <div className="flex items-center gap-1">
@@ -1313,7 +1309,7 @@ export default function MasksPanel({
           )}
         </AnimatePresence>
 
-        <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col min-h-0 p-4 gap-8">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col min-h-0 p-4">
           <AnimatePresence mode="wait">
             {adjustments.masks.length === 0 ? (
               <motion.div
@@ -1323,6 +1319,7 @@ export default function MasksPanel({
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
                 className="z-10 shrink-0"
+                onClick={handleDeselect}
               >
                 <Text variant={TextVariants.heading} className="mb-2">
                   Create New Mask
@@ -1351,6 +1348,7 @@ export default function MasksPanel({
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
                 className={`flex-col transition-colors ${isRootOver ? 'bg-surface' : ''}`}
+                onClick={handleDeselect}
               >
                 <Text variant={TextVariants.heading} className="mb-2">
                   Masks
@@ -1429,6 +1427,8 @@ export default function MasksPanel({
               </motion.div>
             )}
           </AnimatePresence>
+
+          <div className="h-4 shrink-0 w-full" onClick={handleDeselect} />
 
           <AnimatePresence>
             {isSettingsPanelEverOpened && (
@@ -1818,7 +1818,7 @@ function ContainerRow({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden pl-2 border-l border-border-color/20 ml-3.75"
+            className="overflow-hidden pl-2 border-l-[1.5px] border-border-color/50 ml-3.75"
             layout
           >
             <AnimatePresence mode="popLayout" initial={false}>
@@ -2233,8 +2233,21 @@ function SettingsPanel({
     updateContainer(container.id, { adjustments: newAdjustments });
   };
 
-  const handleToggleSection = (section: string) =>
-    setCollapsibleState((prev: any) => ({ ...prev, [section]: !prev[section] }));
+  const handleToggleSection = (section: string) => {
+    setCollapsibleState((prev: any) => {
+      const isOpening = !prev[section];
+      if (appSettings?.enableFocusMode && isOpening) {
+        setSettingsSectionOpen(false);
+        const newState = { ...prev };
+        Object.keys(newState).forEach((key) => {
+          newState[key] = false;
+        });
+        newState[section] = true;
+        return newState;
+      }
+      return { ...prev, [section]: !prev[section] };
+    });
+  };
 
   const handleToggleVisibility = (sectionName: string) => {
     if (!isActive) return;
@@ -2327,7 +2340,19 @@ function SettingsPanel({
       <CollapsibleSection
         title={isComponentMode ? `${getSubMaskName(activeSubMask)} Properties` : 'Mask Properties'}
         isOpen={isSettingsSectionOpen}
-        onToggle={() => setSettingsSectionOpen(!isSettingsSectionOpen)}
+        onToggle={() => {
+          const isOpening = !isSettingsSectionOpen;
+          setSettingsSectionOpen(isOpening);
+          if (appSettings?.enableFocusMode && isOpening) {
+            setCollapsibleState((prev: any) => {
+              const newState = { ...prev };
+              Object.keys(newState).forEach((key) => {
+                newState[key] = false;
+              });
+              return newState;
+            });
+          }
+        }}
         canToggleVisibility={false}
         isContentVisible={true}
       >
