@@ -20,6 +20,7 @@ import {
   Touchpad,
 } from 'lucide-react';
 import { invoke } from '@tauri-apps/api/core';
+import { getCurrentWindow } from '@tauri-apps/api/window';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { motion, AnimatePresence } from 'framer-motion';
 import clsx from 'clsx';
@@ -153,6 +154,11 @@ const linearRawOptions: OptionItem<string>[] = [
   { value: 'gamma', label: 'Apply Gamma' },
   { value: 'skip_calib', label: 'Skip Calibrate' },
   { value: 'gamma_skip_calib', label: 'Apply Gamma & Skip Calibrate' },
+];
+
+const tonemapperOptions: OptionItem<string>[] = [
+  { value: 'agx', label: 'AgX' },
+  { value: 'basic', label: 'Basic' },
 ];
 
 const settingCategories = [
@@ -951,6 +957,18 @@ export default function SettingsPanel({
                       />
                     </SettingItem>
 
+                    <SettingItem
+                      label="Focus Mode"
+                      description="Helps you focus by automatically closing other panels when you open a new one."
+                    >
+                      <Switch
+                        checked={appSettings?.enableFocusMode ?? false}
+                        id="focus-mode-toggle"
+                        label="Enable Focus Mode"
+                        onChange={(checked) => onSettingsChange({ ...appSettings, enableFocusMode: checked })}
+                      />
+                    </SettingItem>
+
                     <SettingItem label="Font" description="Change the application font.">
                       <Dropdown
                         onChange={(value: any) => onSettingsChange({ ...appSettings, fontFamily: value })}
@@ -962,6 +980,23 @@ export default function SettingsPanel({
                         triggerClassName="bg-bg-primary"
                       />
                     </SettingItem>
+
+                    {osPlatform === 'linux' && (
+                      <SettingItem
+                        label="Native Titlebar"
+                        description="Use your system's default window titlebar instead of RapidRAW's custom one."
+                      >
+                        <Switch
+                          checked={appSettings?.decorations ?? false}
+                          id="native-titlebar-toggle"
+                          label="Enable OS Titlebar"
+                          onChange={(checked) => {
+                            onSettingsChange({ ...appSettings, decorations: checked });
+                            getCurrentWindow().setDecorations(checked).catch(console.error);
+                          }}
+                        />
+                      </SettingItem>
+                    )}
                   </div>
                 </div>
 
@@ -1009,6 +1044,19 @@ export default function SettingsPanel({
                           adjustmentVisibility: {
                             ...(appSettings?.adjustmentVisibility || adjustmentVisibilityDefaults),
                             colorCalibration: checked,
+                          },
+                        })
+                      }
+                    />
+                    <Switch
+                      label="Noise Reduction"
+                      checked={appSettings?.adjustmentVisibility?.noiseReduction ?? true}
+                      onChange={(checked) =>
+                        onSettingsChange({
+                          ...appSettings,
+                          adjustmentVisibility: {
+                            ...(appSettings?.adjustmentVisibility || adjustmentVisibilityDefaults),
+                            noiseReduction: checked,
                           },
                         })
                       }
@@ -1671,6 +1719,63 @@ export default function SettingsPanel({
                         triggerClassName="bg-bg-primary"
                       />
                     </SettingItem>
+
+                    <div className="space-y-4">
+                      <SettingItem
+                        label="Global Tonemapper Override"
+                        description="Force a specific tonemapper globally for all images, hiding the tonemapper switch from the adjustments panel."
+                      >
+                        <Switch
+                          checked={appSettings?.tonemapperOverrideEnabled ?? false}
+                          id="tonemapper-override-toggle"
+                          label="Enable Tonemapper Override"
+                          onChange={(checked) =>
+                            onSettingsChange({ ...appSettings, tonemapperOverrideEnabled: checked })
+                          }
+                        />
+                      </SettingItem>
+
+                      <AnimatePresence>
+                        {(appSettings?.tonemapperOverrideEnabled ?? false) && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3, ease: 'easeInOut' }}
+                          >
+                            <div className="pl-4 border-l-2 border-border-color ml-1 space-y-3">
+                              <SettingItem
+                                label="Default RAW Tonemapper"
+                                description="The tonemapper to apply to RAW images."
+                              >
+                                <Dropdown
+                                  onChange={(value: any) =>
+                                    onSettingsChange({ ...appSettings, defaultRawTonemapper: value })
+                                  }
+                                  options={tonemapperOptions}
+                                  value={appSettings?.defaultRawTonemapper || 'agx'}
+                                  triggerClassName="bg-bg-primary"
+                                />
+                              </SettingItem>
+
+                              <SettingItem
+                                label="Default Non-RAW Tonemapper"
+                                description="The tonemapper to apply to non-RAW images (e.g., JPEG, PNG)."
+                              >
+                                <Dropdown
+                                  onChange={(value: any) =>
+                                    onSettingsChange({ ...appSettings, defaultNonRawTonemapper: value })
+                                  }
+                                  options={tonemapperOptions}
+                                  value={appSettings?.defaultNonRawTonemapper || 'basic'}
+                                  triggerClassName="bg-bg-primary"
+                                />
+                              </SettingItem>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
 
                     <SettingItem
                       label="WGPU Direct Rendering"
