@@ -328,7 +328,7 @@ const ColorCalibrationPanel = ({ adjustments, setAdjustments, onDragStateChange 
   const trackSuffix = `${activePrimary}s`;
 
   return (
-    <div className="p-2 bg-bg-tertiary rounded-md mt-4">
+    <div className="bg-bg-tertiary rounded-md">
       <Text variant={TextVariants.heading} className="mb-2">
         Color Calibration
       </Text>
