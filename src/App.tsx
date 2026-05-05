@@ -2,8 +2,10 @@ import { type PointerEvent as ReactPointerEvent, useState, useEffect, useCallbac
 import { motion, AnimatePresence } from 'framer-motion';
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
+import { onBackButtonPress } from '@tauri-apps/api/app';
 import { open } from '@tauri-apps/plugin-dialog';
 import { platform } from '@tauri-apps/plugin-os';
+import { exit } from '@tauri-apps/plugin-process';
 import { homeDir } from '@tauri-apps/api/path';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import debounce from 'lodash.debounce';
@@ -292,6 +294,7 @@ function App() {
     }
   });
   const defaultThumbnailSize = osPlatform === 'android' ? ThumbnailSize.Small : ThumbnailSize.Medium;
+  const defaultLibraryViewMode = osPlatform === 'android' ? LibraryViewMode.Recursive : LibraryViewMode.Flat;
   const [activeView, setActiveView] = useState('library');
   const [isWindowFullScreen, setIsWindowFullScreen] = useState(false);
   const [isInstantTransition, setIsInstantTransition] = useState(false);
@@ -398,7 +401,7 @@ function App() {
     effects: false,
   });
   const [isLibraryExportPanelVisible, setIsLibraryExportPanelVisible] = useState(false);
-  const [libraryViewMode, setLibraryViewMode] = useState<LibraryViewMode>(LibraryViewMode.Flat);
+  const [libraryViewMode, setLibraryViewMode] = useState<LibraryViewMode>(defaultLibraryViewMode);
   const [leftPanelWidth, setLeftPanelWidth] = useState<number>(256);
   const [rightPanelWidth, setRightPanelWidth] = useState<number>(320);
   const [bottomPanelHeight, setBottomPanelHeight] = useState<number>(144);
@@ -514,13 +517,32 @@ function App() {
   const isPortraitViewport = viewportSize.width > 0 && viewportSize.height > viewportSize.width;
   const isCompactPortrait =
     viewportSize.width > 0 && viewportSize.width <= COMPACT_EDITOR_MAX_WIDTH && isPortraitViewport;
-  const compactEditorPanelDefaultHeight =
-    viewportSize.height > 0 ? Math.max(300, Math.min(Math.round(viewportSize.height * 0.46), 520)) : 340;
   const compactEditorPanelMinHeight = 220;
   const compactEditorPanelMaxHeight =
     viewportSize.height > 0
-      ? Math.max(compactEditorPanelMinHeight, Math.min(Math.round(viewportSize.height * 0.72), 620))
+      ? Math.max(compactEditorPanelMinHeight, Math.min(Math.round(viewportSize.height * 0.85), 850))
       : 520;
+  const getDynamicCompactPanelHeight = () => {
+    const halfScreenHeight = viewportSize.height > 0 ? Math.round(viewportSize.height * 0.5) : 340;
+
+    if (!selectedImage || originalSize.width === 0 || originalSize.height === 0 || viewportSize.width === 0) {
+      return halfScreenHeight;
+    }
+    let effectiveRatio = originalSize.width / originalSize.height;
+    const orientationSteps = adjustments?.orientationSteps || 0;
+    if (orientationSteps % 2 !== 0) {
+      effectiveRatio = originalSize.height / originalSize.width;
+    }
+    if (adjustments?.aspectRatio && adjustments.aspectRatio > 0) {
+      effectiveRatio = adjustments.aspectRatio;
+    }
+    const desiredImageHeight = viewportSize.width / effectiveRatio;
+    const topUiEstimation = !appSettings?.decorations && !isWindowFullScreen ? 110 : 60;
+    const totalDesiredTopHeight = desiredImageHeight + topUiEstimation;
+    const calculatedBottomHeight = Math.round(viewportSize.height - totalDesiredTopHeight);
+    return Math.max(halfScreenHeight, calculatedBottomHeight);
+  };
+  const compactEditorPanelDefaultHeight = getDynamicCompactPanelHeight();
   const compactEditorPanelHeight = Math.max(
     compactEditorPanelMinHeight,
     Math.min(compactEditorPanelHeightOverride ?? compactEditorPanelDefaultHeight, compactEditorPanelMaxHeight),
@@ -663,7 +685,7 @@ function App() {
     (angleCorrection: number) => {
       setAdjustments((prev: Partial<Adjustments>) => {
         const newRotation = (prev.rotation || 0) + angleCorrection;
-        return { ...prev, rotation: newRotation, crop: null };
+        return { ...prev, rotation: newRotation };
       });
 
       setIsStraightenActive(false);
@@ -1688,7 +1710,7 @@ function App() {
   );
 
   const flushPipeline = useCallback(() => {
-    if (inFlightCountRef.current >= 2) return;
+    if (inFlightCountRef.current >= 3) return;
     if (!pendingApplyRef.current) return;
 
     const { adjustments, targetRes } = pendingApplyRef.current;
@@ -1826,7 +1848,14 @@ function App() {
     async (path: string) => {
       try {
         const result: LutData = await invoke('load_and_parse_lut', { path });
-        const name = path.split(/[\\/]/).pop() || 'LUT';
+        let name = 'LUT';
+        if (isAndroid) {
+          name = await invoke<string>('resolve_android_content_uri_name', {
+            uriStr: path,
+          });
+        } else {
+          name = path.split(/[\\/]/).pop() || 'LUT';
+        }
         setAdjustments((prev: Partial<Adjustments>) => ({
           ...prev,
           lutPath: path,
@@ -1923,9 +1952,7 @@ function App() {
         if (settings?.uiVisibility) {
           setUiVisibility((prev) => ({ ...prev, ...settings.uiVisibility }));
         }
-        if (settings?.libraryViewMode) {
-          setLibraryViewMode(settings.libraryViewMode);
-        }
+        setLibraryViewMode(settings?.libraryViewMode ?? defaultLibraryViewMode);
         setThumbnailSize(settings?.thumbnailSize ?? defaultThumbnailSize);
         if (settings?.thumbnailAspectRatio) {
           setThumbnailAspectRatio(settings.thumbnailAspectRatio);
@@ -1980,7 +2007,12 @@ function App() {
       })
       .catch((err) => {
         console.error('Failed to load settings:', err);
-        setAppSettings({ lastRootPath: null, theme: DEFAULT_THEME_ID, thumbnailSize: defaultThumbnailSize });
+        setAppSettings({
+          lastRootPath: null,
+          theme: DEFAULT_THEME_ID,
+          thumbnailSize: defaultThumbnailSize,
+          libraryViewMode: defaultLibraryViewMode,
+        });
       })
       .finally(() => {
         isInitialMount.current = false;
@@ -2529,6 +2561,7 @@ function App() {
       setIsWbPickerActive(false);
       setTransformedOriginalUrl(null);
       setIsLibraryExportPanelVisible(false);
+      setCompactEditorPanelHeightOverride(null);
 
       if (isFrontendCached) {
         setSelectedImage({
@@ -2754,6 +2787,51 @@ function App() {
     }
   }, [isFullScreen, selectedImage, zoom]);
 
+  useEffect(() => {
+    if (!isAndroid) {
+      return;
+    }
+
+    let isDisposed = false;
+    let listener: { unregister: () => Promise<void> } | null = null;
+    const isEditorOpen = !!selectedImage;
+
+    onBackButtonPress(() => {
+      if (isFullScreen) {
+        setIsFullScreen(false);
+        return;
+      }
+
+      if (isEditorOpen) {
+        handleBackToLibrary();
+        return;
+      }
+
+      void exit(0).catch((err) => {
+        console.error('Failed to exit app from Android back gesture:', err);
+      });
+    })
+      .then((registeredListener) => {
+        if (isDisposed) {
+          void registeredListener.unregister().catch((err) => {
+            console.error('Failed to unregister stale Android back gesture handler:', err);
+          });
+          return;
+        }
+        listener = registeredListener;
+      })
+      .catch((err) => {
+        console.error('Failed to register Android back gesture handler:', err);
+      });
+
+    return () => {
+      isDisposed = true;
+      void listener?.unregister().catch((err) => {
+        console.error('Failed to unregister Android back gesture handler:', err);
+      });
+    };
+  }, [isAndroid, isFullScreen, selectedImage?.path, handleBackToLibrary]);
+
   const handleCopyAdjustments = useCallback(() => {
     const sourceAdjustments = selectedImage ? adjustments : libraryActiveAdjustments;
     const adjustmentsToCopy: any = {};
@@ -2904,6 +2982,70 @@ function App() {
       applyRatingToPaths(pathsToRate, finalRating);
     },
     [applyRatingToPaths, getRatingTargetPaths, imageRatings],
+  );
+
+  const handleUpdateExif = useCallback(
+    async (paths: Array<string> | undefined, updates: Record<string, string>) => {
+      const pathsToUpdate =
+        paths && paths.length > 0
+          ? paths
+          : multiSelectedPaths.length > 0
+            ? multiSelectedPaths
+            : selectedImage
+              ? [selectedImage.path]
+              : [];
+      if (pathsToUpdate.length === 0) return;
+
+      const physicalPathsSet = new Set(pathsToUpdate.map((p) => p.split('?vc=')[0]));
+      const physicalPathsArray = Array.from(physicalPathsSet);
+
+      try {
+        await invoke(Invokes.UpdateExifFields, {
+          paths: physicalPathsArray,
+          updates,
+        });
+
+        setSelectedImage((prev) => {
+          if (!prev || !physicalPathsSet.has(prev.path.split('?vc=')[0])) return prev;
+          return {
+            ...prev,
+            exif: {
+              ...(prev.exif || {}),
+              ...updates,
+            },
+          };
+        });
+
+        setImageList((prev) =>
+          prev.map((img) => {
+            if (physicalPathsSet.has(img.path.split('?vc=')[0])) {
+              return {
+                ...img,
+                exif: { ...(img.exif || {}), ...updates },
+              };
+            }
+            return img;
+          }),
+        );
+
+        pathsToUpdate.forEach((p) => {
+          const cached = imageCacheRef.current.get(p);
+          if (cached && cached.selectedImage) {
+            imageCacheRef.current.set(p, {
+              ...cached,
+              selectedImage: {
+                ...cached.selectedImage,
+                exif: { ...(cached.selectedImage.exif || {}), ...updates },
+              },
+            });
+          }
+        });
+      } catch (err) {
+        console.error('Failed to update EXIF data:', err);
+        setError(`Failed to update metadata: ${err}`);
+      }
+    },
+    [multiSelectedPaths, selectedImage],
   );
 
   const handleSetColorLabel = useCallback(
@@ -3115,9 +3257,12 @@ function App() {
           const prev = prevAdjustmentsRef.current;
           if (prev && prev.path === selectedImage.path) {
             const delta: Partial<Adjustments> = {};
+            const includedKeys = appSettings?.copyPasteSettings?.includedAdjustments || COPYABLE_ADJUSTMENT_KEYS;
             for (const key of Object.keys(adjustments) as Array<keyof Adjustments>) {
-              if (JSON.stringify(adjustments[key]) !== JSON.stringify(prev.adjustments[key])) {
-                (delta as any)[key] = adjustments[key];
+              if (includedKeys.includes(key as string)) {
+                if (JSON.stringify(adjustments[key]) !== JSON.stringify(prev.adjustments[key])) {
+                  (delta as any)[key] = adjustments[key];
+                }
               }
             }
             if (Object.keys(delta).length > 0) {
@@ -3145,6 +3290,7 @@ function App() {
     applyAdjustments,
     debouncedSave,
     appSettings?.enableLivePreviews,
+    appSettings?.copyPasteSettings?.includedAdjustments,
   ]);
 
   const handleZoomChange = useCallback(
@@ -4377,36 +4523,74 @@ function App() {
         const processedRaw = expandExtensions(raw);
         const allImageExtensions = [...processedNonRaw, ...processedRaw];
 
+        const typeFilters = isAndroid
+          ? []
+          : [
+              {
+                name: 'All Supported Images',
+                extensions: allImageExtensions,
+              },
+              {
+                name: 'RAW Images',
+                extensions: processedRaw,
+              },
+              {
+                name: 'Standard Images (JPEG, PNG, etc.)',
+                extensions: processedNonRaw,
+              },
+              {
+                name: 'All Files',
+                extensions: ['*'],
+              },
+            ];
+
         const selected = await open({
-          filters: [
-            {
-              name: 'All Supported Images',
-              extensions: allImageExtensions,
-            },
-            {
-              name: 'RAW Images',
-              extensions: processedRaw,
-            },
-            {
-              name: 'Standard Images (JPEG, PNG, etc.)',
-              extensions: processedNonRaw,
-            },
-            {
-              name: 'All Files',
-              extensions: ['*'],
-            },
-          ],
+          filters: typeFilters,
           multiple: true,
           title: 'Select files to import',
         });
 
         if (Array.isArray(selected) && selected.length > 0) {
-          if (isAndroid) {
-            await startImportFiles(selected, targetPath, DEFAULT_IMPORT_SETTINGS);
+          const invalidExtensions = new Set<string>();
+          const allowedExtensions = new Set(allImageExtensions.map((e) => e.toLowerCase()));
+
+          const resolvedFiles = await Promise.all(
+            selected.map(async (path) => {
+              if (isAndroid) {
+                try {
+                  return await invoke<string>('resolve_android_content_uri_name', { uriStr: path });
+                } catch (e) {
+                  console.error('Failed to resolve URI:', e);
+                  return path;
+                }
+              }
+              return path;
+            }),
+          );
+
+          const validFiles = selected.filter((originalPath, index) => {
+            const resolvedName = resolvedFiles[index];
+            const ext = resolvedName.split('.').pop()?.toLowerCase() || 'unknown';
+
+            if (!allowedExtensions.has(ext)) {
+              invalidExtensions.add(`.${ext}`);
+              return false;
+            }
+            return true;
+          });
+
+          if (invalidExtensions.size > 0) {
+            const extList = Array.from(invalidExtensions).join(', ');
+            toast.error(`Unsupported file format(s) detected: ${extList}`);
             return;
           }
 
-          setImportSourcePaths(selected);
+          if (isAndroid) {
+            await startImportFiles(validFiles, targetPath, DEFAULT_IMPORT_SETTINGS);
+            return;
+          }
+
+          setImportSourcePaths(validFiles);
           setImportTargetFolder(targetPath);
           setIsImportModalOpen(true);
         }
@@ -4414,7 +4598,7 @@ function App() {
         console.error('Failed to open file dialog for import:', err);
       }
     },
-    [isAndroid, startImportFiles, supportedTypes],
+    [supportedTypes, isAndroid, startImportFiles],
   );
 
   const handleEditorContextMenu = (event: any) => {
@@ -5523,12 +5707,15 @@ function App() {
               {renderedRightPanel === Panel.Metadata && (
                 <MetadataPanel
                   selectedImage={selectedImage}
+                  multiSelectedPaths={multiSelectedPaths}
                   rating={imageRatings[selectedImage.path] || 0}
                   tags={imageList.find((img) => img.path === selectedImage.path)?.tags || []}
                   onRate={handleRate}
+                  onUpdateExif={handleUpdateExif}
                   onSetColorLabel={handleSetColorLabel}
                   onTagsChanged={handleTagsChanged}
                   appSettings={appSettings}
+                  liveThumbnailUrl={thumbnails[selectedImage.path]}
                 />
               )}
               {renderedRightPanel === Panel.Crop && (
@@ -5720,8 +5907,7 @@ function App() {
 
   const shouldHideFolderTree = isAndroid;
   const isWgpuActive = appSettings?.useWgpuRenderer !== false && selectedImage?.isReady && hasRenderedFirstFrame;
-  const useMacWindowShell =
-    osPlatform === 'macos' && !appSettings?.decorations && !isWindowFullScreen && !isFullScreen;
+  const useMacWindowShell = osPlatform === 'macos' && !appSettings?.decorations && !isWindowFullScreen && !isFullScreen;
 
   useEffect(() => {
     if (selectedImage?.path && selectedImage.isReady && (finalPreviewUrl || isWgpuActive)) {
@@ -5771,10 +5957,7 @@ function App() {
         className={clsx(
           'flex-1 flex flex-col min-h-0',
           isLayoutReady && rootPath && !isInstantTransition && 'transition-all duration-300 ease-in-out',
-          [
-            rootPath && (isFullScreen ? 'p-0 gap-0' : 'p-2 gap-2'),
-            !appSettings?.decorations && !isWindowFullScreen && !isFullScreen && (rootPath ? 'pt-12' : 'pt-10'),
-          ],
+          [rootPath && (isFullScreen ? 'p-0 gap-0' : 'p-2 gap-2')],
         )}
       >
         <div className="flex flex-row grow h-full min-h-0">
